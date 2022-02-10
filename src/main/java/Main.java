@@ -4,6 +4,7 @@ import java.sql.Statement;
 
 public class Main extends Connect{
     public static void main(String[] args) throws SQLException {
+        tryConnect();
         Statement stm = connect().createStatement();
 
         String execute = "SELECT * FROM auto";

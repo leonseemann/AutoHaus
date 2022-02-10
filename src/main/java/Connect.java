@@ -7,13 +7,19 @@ public class Connect {
 
     public static Connection connect(){
         try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            System.out.println("[SQL] Verbindung erfolgreich hergestellt");
-            return con;
+            return DriverManager.getConnection(url, user, pass);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public static void tryConnect(){
+        try {
+            DriverManager.getConnection(url, user, pass);
+            System.err.println("[SQL] Verbindung erfolgreich hergestellt");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.err.println("[SQL] Verbindung nicht erfolgreich!");
-            return null;
         }
     }
 }

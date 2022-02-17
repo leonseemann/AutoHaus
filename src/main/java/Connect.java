@@ -1,8 +1,8 @@
 import java.sql.*;
 
 public class Connect {
-    private static final String url = "jdbc:mysql://localhost:3306/autohaus";
-    private static final String user = "root";
+    private static final String url = "jdbc:mysql://192.168.0.2:3306/Autohaus";
+    private static final String user = "autohaus";
     private static final String pass = "";
 
     public static Connection connect(){

@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Main extends Connect{
     public static void main(String[] args){
+        tryConnect();
         switch (inputInt("Auswahl: ")){
             case "0":
                 exportSQL();

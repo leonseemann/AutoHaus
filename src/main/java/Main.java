@@ -1,10 +1,12 @@
+import SQL.Connect;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class Main extends Connect{
+public class Main extends Connect {
     public static void main(String[] args){
         tryConnect();
         switch (inputInt("Auswahl: ")){

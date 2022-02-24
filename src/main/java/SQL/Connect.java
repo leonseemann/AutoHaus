@@ -1,9 +1,11 @@
+package SQL;
+
 import java.sql.*;
 
 public class Connect {
-    private static final String url = "jdbc:mysql://192.168.0.2:3306/Autohaus";
-    private static final String user = "autohaus";
-    private static final String pass = "";
+    public static final String url = "jdbc:mysql://192.168.0.2:3306/Autohaus";
+    public static final String user = "autohaus";
+    public static final String pass = "";
 
     public static Connection connect(){
         try {
@@ -22,4 +24,6 @@ public class Connect {
             System.err.println("[SQL] Verbindung nicht erfolgreich!");
         }
     }
+
+
 }

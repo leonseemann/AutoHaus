@@ -1,5 +1,3 @@
-package GUI;
-
 import GUI.ui.GUI;
 
 import javax.swing.*;

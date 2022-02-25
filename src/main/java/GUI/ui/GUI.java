@@ -2,30 +2,22 @@ package GUI.ui;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static SQL.Connect.connect;
 
-
 public class GUI {
-    private JTable tableCars;
     private JPanel rootPanel;
-    private JTabbedPane tabbedPaneList;
-    private JSplitPane split;
-    private JButton button1;
-    private JTextArea textArea1;
-    private JTextArea textArea2;
-    private JTextArea textArea3;
-    private JTextArea textArea4;
-    private JTextArea textArea5;
-    private JTable tableDelete;
-    private JSpinner spinner1;
-    private JButton button2;
+    private JTabbedPane tabbedPane1;
+
+    private JTable tableCars;
+    private JTable tableAusstattung;
+    private JTable tableMotor;
 
 
-    private void createTable() {
+    private void createTableCars() {
         try {
             DefaultTableModel dtm = new DefaultTableModel(
                     null,
@@ -41,7 +33,6 @@ public class GUI {
             }
 
             tableCars.setModel(dtm);
-            tableDelete.setModel(dtm);
 
             stm.close();
             rs.close();
@@ -50,60 +41,68 @@ public class GUI {
         }
     }
 
-    private void splitPanel() {
-        split.setOrientation(0);
-    }
-
-    private void reloadTables() {
+    private void createTableAusstattung(){
         try {
             DefaultTableModel dtm = new DefaultTableModel(
                     null,
-                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "ASID", "MTID"}
+                    new String[]{"ASID", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial"}
             );
-            String execute = "SELECT * FROM Auto";
-            PreparedStatement pst = null;
-            pst = connect().prepareStatement(execute);
-            ResultSet rs = pst.executeQuery();
+            String execute = "SELECT * FROM Ausstattung";
+            PreparedStatement stm = connect().prepareStatement(execute);
+            ResultSet rs = stm.executeQuery();
+
             while (rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7)};
+                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10)};
                 dtm.addRow(data);
             }
 
-            tableCars.setModel(dtm);
-            tableDelete.setModel(dtm);
+            tableAusstattung.setModel(dtm);
 
-            pst.close();
+            stm.close();
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    private void createTableMotor() {
+        try {
+            DefaultTableModel dtm = new DefaultTableModel(
+                    null,
+                    new String[]{"MTID", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"}
+            );
+            String execute = "SELECT * FROM Motor";
+            PreparedStatement stm = connect().prepareStatement(execute);
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)};
+                dtm.addRow(data);
+            }
+
+            tableMotor.setModel(dtm);
+
+            stm.close();
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void reloadTables() {
+        createTableMotor();
+        createTableCars();
+        createTableAusstattung();
     }
 
     public GUI() {
-        createTable();
-        splitPanel();
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Pressed");
-            }
-        }); //TODO ActionListener list for better Code (New Class or something)!
-        button2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String sql = "DELETE FROM Auto WHERE ATID = ?";
-                try {
-                    PreparedStatement delete = connect().prepareStatement(sql);
-                    delete.setString(1, spinner1.getValue().toString());
-                    delete.executeUpdate();
-                    System.out.println("DONE");
-                    reloadTables();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        createTableCars();
+        createTableAusstattung();
+        createTableMotor();
+        EventListener();
+    }
+
+    private void EventListener() {
     }
 
     public JPanel getRootPanel() {

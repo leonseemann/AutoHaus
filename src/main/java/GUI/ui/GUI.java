@@ -197,7 +197,11 @@ public class GUI {
                         break;
                 }
 
-                kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
+                if(tbm.getValueAt(i,4) == null) {
+                    kommentarTextArea.setText("NULL");
+                } else {
+                    kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
+                }
 
                 spinnerAusstattung.setValue(Integer.parseInt(tbm.getValueAt(i, 5).toString()));
 

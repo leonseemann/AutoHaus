@@ -29,9 +29,9 @@ public class GUI {
     private JButton aktialisierenButton;
     private JButton löschenButton;
     private JSpinner spinnerJahr;
+    private JSpinner spinnerAID;
 
     String AID;
-
 
     private void createTableCars() {
         try {
@@ -111,101 +111,12 @@ public class GUI {
         createTableAusstattung();
     }
 
-    public GUI() {
-        spinnerJahr.setEditor(new JSpinner.NumberEditor(spinnerJahr,"#"));
-
-        createTableCars();
-        createTableAusstattung();
-        createTableMotor();
-        EventListener();
-    }
-
     private void EventListener() {
         tableCars.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                int i = tableCars.getSelectedRow();
-                TableModel tbm = tableCars.getModel();
-
-                AID = tbm.getValueAt(i,0).toString();
-
-                System.out.println(AID);
-
-                switch(tbm.getValueAt(i,1).toString()){
-                    case "Combi":
-                        comboBoxTyp.setSelectedIndex(1);
-                        break;
-                    case "Coupe":
-                        comboBoxTyp.setSelectedIndex(2);
-                        break;
-                    case "Sportwagen":
-                        comboBoxTyp.setSelectedIndex(3);
-                        break;
-                    case "Limo":
-                        comboBoxTyp.setSelectedIndex(4);
-                        break;
-                    case "SUV":
-                        comboBoxTyp.setSelectedIndex(5);
-                        break;
-                    case "Cabrio":
-                        comboBoxTyp.setSelectedIndex(6);
-                        break;
-                    default:
-                        comboBoxTyp.setSelectedIndex(0);
-                        break;
-                }
-
-                spinnerJahr.setValue(Integer.parseInt(tbm.getValueAt(i,2).toString()));
-
-                switch(tbm.getValueAt(i,3).toString()){
-                    case "BMW":
-                        comboBoxHerseller.setSelectedIndex(1);
-                        break;
-                    case "Mercedes":
-                        comboBoxHerseller.setSelectedIndex(2);
-                        break;
-                    case "VW":
-                        comboBoxHerseller.setSelectedIndex(3);
-                        break;
-                    case "Audi":
-                        comboBoxHerseller.setSelectedIndex(4);
-                        break;
-                    case "Opel":
-                        comboBoxHerseller.setSelectedIndex(5);
-                        break;
-                    case "Nissan":
-                        comboBoxHerseller.setSelectedIndex(6);
-                        break;
-                    case "Porsche":
-                        comboBoxHerseller.setSelectedIndex(7);
-                        break;
-                    case "Lamborghini":
-                        comboBoxHerseller.setSelectedIndex(8);
-                        break;
-                    case "Smart":
-                        comboBoxHerseller.setSelectedIndex(9);
-                        break;
-                    case "Ferrari":
-                        comboBoxHerseller.setSelectedIndex(10);
-                        break;
-                    case "Toyota":
-                        comboBoxHerseller.setSelectedIndex(11);
-                        break;
-                    case "Tesla":
-                        comboBoxHerseller.setSelectedIndex(12);
-                        break;
-                }
-
-                if(tbm.getValueAt(i,4) == null) {
-                    kommentarTextArea.setText("NULL");
-                } else {
-                    kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
-                }
-
-                spinnerAusstattung.setValue(Integer.parseInt(tbm.getValueAt(i, 5).toString()));
-
-                spinnerMotor.setValue(Integer.parseInt(tbm.getValueAt(i, 6).toString()));
+                setAuto(tableCars.getSelectedRow(), tableCars.getModel());
             }
         });
 
@@ -219,15 +130,20 @@ public class GUI {
                     pstmAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
                     pstmAuto.setString(2, spinnerJahr.getValue().toString());
                     pstmAuto.setString(3, comboBoxHerseller.getSelectedItem().toString());
-                    pstmAuto.setString(4, kommentarTextArea.getText());
+
+                    if(kommentarTextArea.getText().isBlank()){
+                        pstmAuto.setString(4, null);
+                    } else {
+                        pstmAuto.setString(4, kommentarTextArea.getText());
+                    }
+
                     pstmAuto.setString(5, spinnerAusstattung.getValue().toString());
                     pstmAuto.setString(6, spinnerMotor.getValue().toString());
-
-                    System.out.println(pstmAuto);
 
                     pstmAuto.executeUpdate();
 
                     reloadTables();
+                    setAutoZero();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -245,11 +161,135 @@ public class GUI {
                     psm.executeUpdate();
 
                     reloadTables();
+                    setAutoZero();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
         });
+
+        aktialisierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlUpdateAuto = "UPDATE `auto` SET `Typ` = ?, `Baujahr` = ?, `Hersteller` = ?, `Kommentar` = ?, `ASID` = ?, `MTID` = ? WHERE `auto`.`ATID` = ?;";
+                    PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
+
+                    pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
+                    pstmUpdateAuto.setString(2, spinnerJahr.getValue().toString());
+                    pstmUpdateAuto.setString(3, comboBoxHerseller.getSelectedItem().toString());
+                    pstmUpdateAuto.setString(4, kommentarTextArea.getText());
+                    pstmUpdateAuto.setString(5, spinnerAusstattung.getValue().toString());
+                    pstmUpdateAuto.setString(6, spinnerMotor.getValue().toString());
+                    pstmUpdateAuto.setString(7, AID);
+
+                    pstmUpdateAuto.executeUpdate();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setAuto(int i, TableModel tbm){
+        AID = tbm.getValueAt(i,0).toString();
+
+        spinnerAID.setValue(Integer.parseInt(AID));
+
+        switch(tbm.getValueAt(i,1).toString()){
+            case "Combi":
+                comboBoxTyp.setSelectedIndex(1);
+                break;
+            case "Coupe":
+                comboBoxTyp.setSelectedIndex(2);
+                break;
+            case "Sportwagen":
+                comboBoxTyp.setSelectedIndex(3);
+                break;
+            case "Limo":
+                comboBoxTyp.setSelectedIndex(4);
+                break;
+            case "SUV":
+                comboBoxTyp.setSelectedIndex(5);
+                break;
+            case "Cabrio":
+                comboBoxTyp.setSelectedIndex(6);
+                break;
+            default:
+                comboBoxTyp.setSelectedIndex(0);
+                break;
+        }
+
+        spinnerJahr.setValue(Integer.parseInt(tbm.getValueAt(i,2).toString()));
+
+        switch(tbm.getValueAt(i,3).toString()){
+            case "BMW":
+                comboBoxHerseller.setSelectedIndex(1);
+                break;
+            case "Mercedes":
+                comboBoxHerseller.setSelectedIndex(2);
+                break;
+            case "VW":
+                comboBoxHerseller.setSelectedIndex(3);
+                break;
+            case "Audi":
+                comboBoxHerseller.setSelectedIndex(4);
+                break;
+            case "Opel":
+                comboBoxHerseller.setSelectedIndex(5);
+                break;
+            case "Nissan":
+                comboBoxHerseller.setSelectedIndex(6);
+                break;
+            case "Porsche":
+                comboBoxHerseller.setSelectedIndex(7);
+                break;
+            case "Lamborghini":
+                comboBoxHerseller.setSelectedIndex(8);
+                break;
+            case "Smart":
+                comboBoxHerseller.setSelectedIndex(9);
+                break;
+            case "Ferrari":
+                comboBoxHerseller.setSelectedIndex(10);
+                break;
+            case "Toyota":
+                comboBoxHerseller.setSelectedIndex(11);
+                break;
+            case "Tesla":
+                comboBoxHerseller.setSelectedIndex(12);
+                break;
+        }
+
+        if(tbm.getValueAt(i,4) == null) {
+            kommentarTextArea.setText("NULL");
+        } else {
+            kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
+        }
+
+        spinnerAusstattung.setValue(Integer.parseInt(tbm.getValueAt(i, 5).toString()));
+
+        spinnerMotor.setValue(Integer.parseInt(tbm.getValueAt(i, 6).toString()));
+    }
+
+    private void setAutoZero(){
+        AID = "0";
+
+        spinnerAID.setValue(Integer.parseInt(AID));
+
+        comboBoxTyp.setSelectedIndex(0);
+
+        spinnerJahr.setValue(0);
+
+        comboBoxHerseller.setSelectedIndex(0);
+
+        kommentarTextArea.setText("");
+
+        spinnerAusstattung.setValue(0);
+
+        spinnerMotor.setValue(0);
     }
 
     private static String getID(PreparedStatement ps){
@@ -269,6 +309,14 @@ public class GUI {
         return rootPanel;
     }
 
+    public GUI() {
+        spinnerJahr.setEditor(new JSpinner.NumberEditor(spinnerJahr,"#"));
+
+        createTableCars();
+        createTableAusstattung();
+        createTableMotor();
+        EventListener();
+    }
 }
 
     

@@ -29,7 +29,9 @@ public class GUI {
     private JButton aktialisierenButton;
     private JButton löschenButton;
     private JSpinner spinnerJahr;
-    private JSpinner spinnerAID;
+    private JTextField textFieldAID;
+    private JTextField textFieldAAID;
+    private JSpinner spinner1;
 
     String AID;
 
@@ -196,7 +198,7 @@ public class GUI {
     private void setAuto(int i, TableModel tbm){
         AID = tbm.getValueAt(i,0).toString();
 
-        spinnerAID.setValue(Integer.parseInt(AID));
+        textFieldAID.setText(AID);
 
         switch(tbm.getValueAt(i,1).toString()){
             case "Combi":
@@ -277,7 +279,7 @@ public class GUI {
     private void setAutoZero(){
         AID = "0";
 
-        spinnerAID.setValue(Integer.parseInt(AID));
+        textFieldAID.setText(AID);
 
         comboBoxTyp.setSelectedIndex(0);
 

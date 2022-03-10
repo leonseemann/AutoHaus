@@ -249,7 +249,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlUpdateAuto = "UPDATE `Auto` SET `Typ` = ?, `Baujahr` = ?, `Hersteller` = ?, `Kommentar` = ?, `ASID` = ?, `MTID` = ? `Preis` = ? WHERE ATID = ?;";
+                    String sqlUpdateAuto = "UPDATE `Auto` SET `Typ` = ?, `Baujahr` = ?, `Hersteller` = ?, `Kommentar` = ?, `ASID` = ?, `MTID` = ?, `Preis` = ? WHERE ATID = ?;";
                     PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
 
                     pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());

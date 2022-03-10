@@ -3,13 +3,11 @@ package GUI.ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import static SQL.Connect.connect;
 
@@ -25,15 +23,41 @@ public class GUI {
     private JTextArea kommentarTextArea;
     private JSpinner spinnerMotor;
     private JSpinner spinnerAusstattung;
-    private JButton einfügenButton;
-    private JButton aktialisierenButton;
-    private JButton löschenButton;
+    private JButton ATeinfügenButton;
+    private JButton ATaktialisierenButton;
+    private JButton ATlöschenButton;
     private JSpinner spinnerJahr;
     private JTextField textFieldAID;
     private JTextField textFieldAAID;
-    private JSpinner spinner1;
+    private JSpinner spinnerZoll;
+    private JComboBox comboBoxFelgenMaterial;
+    private JCheckBox checkBoxSitzheizung;
+    private JCheckBox checkBoxLenkradheizung;
+    private JCheckBox checkBoxSchiebedach;
+    private JTextField textFieldFarbe;
+    private JComboBox comboBoxFarbMaterial;
+    private JComboBox comboBoxInnenraumMaterial;
+    private JComboBox comboBoxSitzMaterial;
+    private JButton ASeinfügenButton;
+    private JButton ASaktualisierenButton;
+    private JButton ASlöschenButton;
+    private JTextField textFieldMotorID;
+    private JTextField textFieldVerbrauch;
+    private JComboBox comboBoxGetriebe;
+    private JComboBox comboBoxKraftstoff;
+    private JSpinner spinnerHubraum;
+    private JSpinner spinnerPS;
+    private JButton MAINlöschenButton2;
+    private JButton MAINaktualisierenButton;
+    private JTable tableMain;
+    private JButton MTeinfügenButton;
+    private JButton MTaktualisierenButton;
+    private JButton MTlöschenButton;
+    private JLabel ASErrorCode;
+    private JLabel ASError;
 
-    String AID;
+
+    /* ----------------------------------- createTable --------------------------*/
 
     private void createTableCars() {
         try {
@@ -107,13 +131,42 @@ public class GUI {
         }
     }
 
+    private void createTableMain() { //TODO Anfangen
+        try {
+            DefaultTableModel dtm = new DefaultTableModel(
+                    null,
+                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"}
+            );
+
+            /*
+            String execute = "SELECT * FROM Auto";
+            PreparedStatement stm = connect().prepareStatement(execute);
+            ResultSet rs = stm.executeQuery();
+            */
+                String[] data = {"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"};
+                dtm.addRow(data);
+
+            tableMain.setModel(dtm);
+
+           /*stm.close();
+           rs.close();*/
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /* ----------------------------------- reloadTable --------------------------*/
+
     private void reloadTables() {
         createTableMotor();
         createTableCars();
         createTableAusstattung();
+        createTableMain();
     }
 
-    private void EventListener() {
+    /* ----------------------------------- eventListener --------------------------*/
+
+    private void eventListenerAuto() {
         tableCars.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -122,7 +175,15 @@ public class GUI {
             }
         });
 
-        einfügenButton.addActionListener(new ActionListener() {
+        tableCars.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                setAuto(tableCars.getSelectedRow(), tableCars.getModel());
+            }
+        });
+
+        ATeinfügenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -152,13 +213,13 @@ public class GUI {
             }
         });
 
-        löschenButton.addActionListener(new ActionListener() {
+        ATlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sqlDelete = "DELETE FROM `auto` WHERE `auto`.`ATID` = ?";
                 try {
                     PreparedStatement psm = connect().prepareStatement(sqlDelete);
-                    psm.setString(1, AID);
+                    psm.setString(1, textFieldAID.getText());
 
                     psm.executeUpdate();
 
@@ -170,7 +231,7 @@ public class GUI {
             }
         });
 
-        aktialisierenButton.addActionListener(new ActionListener() {
+        ATaktialisierenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -180,10 +241,16 @@ public class GUI {
                     pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
                     pstmUpdateAuto.setString(2, spinnerJahr.getValue().toString());
                     pstmUpdateAuto.setString(3, comboBoxHerseller.getSelectedItem().toString());
-                    pstmUpdateAuto.setString(4, kommentarTextArea.getText());
+
+                    if(kommentarTextArea.getText().isBlank()){
+                        pstmUpdateAuto.setString(4, null);
+                    } else {
+                        pstmUpdateAuto.setString(4, kommentarTextArea.getText());
+                    }
+
                     pstmUpdateAuto.setString(5, spinnerAusstattung.getValue().toString());
                     pstmUpdateAuto.setString(6, spinnerMotor.getValue().toString());
-                    pstmUpdateAuto.setString(7, AID);
+                    pstmUpdateAuto.setString(7, textFieldAID.getText());
 
                     pstmUpdateAuto.executeUpdate();
 
@@ -195,10 +262,220 @@ public class GUI {
         });
     }
 
-    private void setAuto(int i, TableModel tbm){
-        AID = tbm.getValueAt(i,0).toString();
+    private void eventListenerAusstattung(){
+        tableAusstattung.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                setAusstattung(tableAusstattung.getSelectedRow(), tableAusstattung.getModel());
+            }
+        });
 
-        textFieldAID.setText(AID);
+        tableAusstattung.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                setAusstattung(tableAusstattung.getSelectedRow(), tableAusstattung.getModel());
+            }
+        });
+
+        ASeinfügenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlAusstattung = "INSERT INTO ausstattung (FelgenZoll, Felgenmaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung, Statement.RETURN_GENERATED_KEYS);
+
+                    pstmAusstattung.setString(1,spinnerZoll.getValue().toString());
+                    pstmAusstattung.setString(2, comboBoxFelgenMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setBoolean(3,checkBoxSitzheizung.isSelected());
+                    pstmAusstattung.setBoolean(4,checkBoxLenkradheizung.isSelected());
+                    pstmAusstattung.setBoolean(5,checkBoxSchiebedach.isSelected());
+
+                    if(textFieldFarbe.getText().isBlank()) {
+                        pstmAusstattung.setString(6, null);
+                    } else {
+                        pstmAusstattung.setString(6, textFieldFarbe.getText());
+                    }
+
+                    pstmAusstattung.setString(7,comboBoxFarbMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setString(8,comboBoxInnenraumMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
+
+                    pstmAusstattung.executeUpdate();
+
+                    spinnerAusstattung.setValue(Integer.parseInt(getID(pstmAusstattung)));
+
+                    reloadTables();
+                    setAusstattungZero();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        ASaktualisierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlAusstattung = "UPDATE ausstattung SET FelgenZoll = ?, Felgenmaterial = ?, Sitzheizung = ?, Lenkradheizung = ?, Schiebedach = ?, Farbe = ?, FarbeMaterial = ?, InnenraumMaterial = ?, SitzMaterial = ? WHERE ASID = ?";
+                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
+
+                    pstmAusstattung.setString(1, spinnerZoll.getValue().toString());
+                    pstmAusstattung.setString(2, comboBoxFelgenMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setBoolean(3, checkBoxSitzheizung.isSelected());
+                    pstmAusstattung.setBoolean(4, checkBoxLenkradheizung.isSelected());
+                    pstmAusstattung.setBoolean(5, checkBoxSchiebedach.isSelected());
+                    pstmAusstattung.setString(6, textFieldFarbe.getText());
+                    pstmAusstattung.setString(7, comboBoxFarbMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setString(8, comboBoxInnenraumMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setString(10, textFieldAAID.getText());
+
+                    pstmAusstattung.executeUpdate();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        ASlöschenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlAusstattung = "DELETE FROM ausstattung WHERE ASID = ?";
+                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
+
+                    pstmAusstattung.setString(1, textFieldAAID.getText());
+
+                    pstmAusstattung.executeUpdate();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    if (ex.toString().startsWith("java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails")) {
+                        System.out.println("Foregin Key in Use!");
+                        ASError.setVisible(true);
+                        ASErrorCode.setText("Foregin Key in Use!");
+                        new java.util.Timer().schedule(
+                                new java.util.TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        ASErrorCode.setText(null);
+                                        ASError.setVisible(false);
+                                    }
+                                },
+                                2000
+                        );
+                    }
+                }
+            }
+        });
+    }
+
+    private void eventListenerMotor(){
+        tableMotor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                setMotor(tableMotor.getSelectedRow(), tableMotor.getModel());
+            }
+        });
+
+        tableMotor.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                setMotor(tableMotor.getSelectedRow(), tableMotor.getModel());
+            }
+        });
+
+        MTeinfügenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlMotor = "INSERT INTO motor (Verbrauch, Getriebe, Kraftstoff, Hubraum, PS) VALUES (?, ?, ?, ?, ?);";
+                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor, Statement.RETURN_GENERATED_KEYS);
+
+                    pstmMotor.setString(1, textFieldVerbrauch.getText());
+                    pstmMotor.setString(2, comboBoxGetriebe.getSelectedItem().toString());
+                    pstmMotor.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
+                    pstmMotor.setString(4, spinnerHubraum.getValue().toString());
+                    pstmMotor.setString(5, spinnerPS.getValue().toString());
+
+                    pstmMotor.executeUpdate();
+
+                    spinnerMotor.setValue(Integer.parseInt(getID(pstmMotor)));
+
+                    setMotorZero();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+
+        MTaktualisierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlMotor = "UPDATE motor SET Verbrauch = ?, Getriebe = ?, Kraftstoff = ?, Hubraum = ?, PS = ? WHERE MTID = ?";
+                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
+
+                    pstmMotor.setString(1, textFieldVerbrauch.getText());
+                    pstmMotor.setString(2, comboBoxGetriebe.getSelectedItem().toString());
+                    pstmMotor.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
+                    pstmMotor.setString(4, spinnerHubraum.getValue().toString());
+                    pstmMotor.setString(5, spinnerPS.getValue().toString());
+                    pstmMotor.setString(6, textFieldMotorID.getText());
+
+                    pstmMotor.executeUpdate();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        MTlöschenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String sqlMotor = "DELETE FROM motor WHERE MTID = ?";
+                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
+
+                    pstmMotor.setString(1, textFieldMotorID.getText());
+
+                    pstmMotor.executeUpdate();
+
+                    setMotorZero();
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void eventListenerMain(){
+        MAINaktualisierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reloadTables();
+            }
+        });
+    }
+
+    /* ----------------------------------- setMethoden --------------------------*/
+
+    private void setAuto(int i, TableModel tbm){
+
+        textFieldAID.setText(tbm.getValueAt(i,0).toString());
 
         switch(tbm.getValueAt(i,1).toString()){
             case "Combi":
@@ -277,9 +554,7 @@ public class GUI {
     }
 
     private void setAutoZero(){
-        AID = "0";
-
-        textFieldAID.setText(AID);
+        textFieldAID.setText("0");
 
         comboBoxTyp.setSelectedIndex(0);
 
@@ -293,6 +568,188 @@ public class GUI {
 
         spinnerMotor.setValue(0);
     }
+
+    private void setAusstattung(int i, TableModel tbm){
+
+        textFieldAAID.setText(tbm.getValueAt(i, 0).toString());
+
+        spinnerZoll.setValue(Integer.parseInt(tbm.getValueAt(i,1).toString()));
+
+        switch(tbm.getValueAt(i,2).toString()){
+            case "Aluminium":
+                comboBoxFelgenMaterial.setSelectedIndex(1);
+                break;
+            case "Stahl":
+                comboBoxFelgenMaterial.setSelectedIndex(2);
+                break;
+            case "Carbon":
+                comboBoxFelgenMaterial.setSelectedIndex(3);
+                break;
+            case "Magnesium":
+                comboBoxFelgenMaterial.setSelectedIndex(4);
+                break;
+            case "Silizium":
+                comboBoxFelgenMaterial.setSelectedIndex(5);
+                break;
+            case "Mangan":
+                comboBoxFelgenMaterial.setSelectedIndex(6);
+                break;
+            default:
+                comboBoxFelgenMaterial.setSelectedIndex(0);
+                break;
+        }
+
+        System.out.println(tbm.getValueAt(i,3).toString());
+
+        if (tbm.getValueAt(i,3).toString().equals("1")){
+            checkBoxSitzheizung.setSelected(true);
+        } else {
+            checkBoxSitzheizung.setSelected(false);
+        }
+
+        if (tbm.getValueAt(i,4).toString().equals("1")){
+            checkBoxLenkradheizung.setSelected(true);
+        } else {
+            checkBoxLenkradheizung.setSelected(false);
+        }
+
+        if (tbm.getValueAt(i,5).toString().equals("1")){
+            checkBoxSchiebedach.setSelected(true);
+        } else {
+            checkBoxSchiebedach.setSelected(false);
+        }
+
+        textFieldFarbe.setText(tbm.getValueAt(i,6).toString());
+
+        switch(tbm.getValueAt(i,7).toString()) {
+            case "Matt":
+                comboBoxFarbMaterial.setSelectedIndex(1);
+                break;
+            case "Glanz":
+                comboBoxFarbMaterial.setSelectedIndex(1);
+                break;
+            case "Perleffekt":
+                comboBoxFarbMaterial.setSelectedIndex(1);
+                break;
+            default:
+                comboBoxFarbMaterial.setSelectedIndex(0);
+                break;
+        }
+
+        switch(tbm.getValueAt(i, 8).toString()) {
+            case "Carbon":
+                comboBoxInnenraumMaterial.setSelectedIndex(1);
+                break;
+            case "Alkantara":
+                comboBoxInnenraumMaterial.setSelectedIndex(2);
+                break;
+            case "Holz":
+                comboBoxInnenraumMaterial.setSelectedIndex(3);
+                break;
+            case "Plastik":
+                comboBoxInnenraumMaterial.setSelectedIndex(4);
+                break;
+            default:
+                comboBoxInnenraumMaterial.setSelectedIndex(0);
+                break;
+        }
+
+        switch (tbm.getValueAt(i,9).toString()) {
+            case "Stoff":
+                comboBoxSitzMaterial.setSelectedIndex(1);
+                break;
+            case "Leder":
+                comboBoxSitzMaterial.setSelectedIndex(2);
+                break;
+            case "Alkantara":
+                comboBoxSitzMaterial.setSelectedIndex(3);
+                break;
+            default:
+                comboBoxSitzMaterial.setSelectedIndex(0);
+                break;
+        }
+    }
+
+    private void setAusstattungZero() {
+        textFieldAAID.setText("0");
+
+        spinnerZoll.setValue(0);
+
+        comboBoxFelgenMaterial.setSelectedIndex(0);
+
+        checkBoxSitzheizung.setSelected(false);
+
+        checkBoxLenkradheizung.setSelected(false);
+
+        checkBoxSchiebedach.setSelected(false);
+
+        textFieldFarbe.setText(null);
+
+        comboBoxFarbMaterial.setSelectedIndex(0);
+
+        comboBoxInnenraumMaterial.setSelectedIndex(0);
+
+        comboBoxSitzMaterial.setSelectedIndex(0);
+    }
+
+    private void setMotor (int i, TableModel tbm) {
+        textFieldMotorID.setText(tbm.getValueAt(i,0).toString());
+
+        textFieldVerbrauch.setText(tbm.getValueAt(i,1).toString());
+
+        switch(tbm.getValueAt(i,2).toString()){
+            case "Manuell":
+                comboBoxGetriebe.setSelectedIndex(1);
+                break;
+            case "Automatik":
+                comboBoxGetriebe.setSelectedIndex(2);
+                break;
+            case "Halb-Automatik":
+                comboBoxGetriebe.setSelectedIndex(3);
+                break;
+            default:
+                comboBoxGetriebe.setSelectedIndex(0);
+                break;
+        }
+
+        switch (tbm.getValueAt(i,3).toString()) {
+            case "Diesel":
+                comboBoxKraftstoff.setSelectedIndex(1);
+                break;
+            case "Benzin":
+                comboBoxKraftstoff.setSelectedIndex(2);
+                break;
+            case "Strom":
+                comboBoxKraftstoff.setSelectedIndex(3);
+                break;
+            case "Gas":
+                comboBoxKraftstoff.setSelectedIndex(4);
+                break;
+            default:
+                comboBoxKraftstoff.setSelectedIndex(0);
+                break;
+        }
+
+        spinnerHubraum.setValue(Integer.parseInt(tbm.getValueAt(i,4).toString()));
+
+        spinnerPS.setValue(Integer.parseInt(tbm.getValueAt(i,5).toString()));
+    }
+
+    private void setMotorZero() {
+        textFieldMotorID.setText(null);
+
+        textFieldVerbrauch.setText("0");
+
+        comboBoxGetriebe.setSelectedIndex(0);
+
+        comboBoxKraftstoff.setSelectedIndex(0);
+
+        spinnerHubraum.setValue(0);
+
+        spinnerPS.setValue(0);
+    }
+
+    /* ----------------------------------- Sonstiges --------------------------*/
 
     private static String getID(PreparedStatement ps){
         int id = 0;
@@ -313,12 +770,22 @@ public class GUI {
 
     public GUI() {
         spinnerJahr.setEditor(new JSpinner.NumberEditor(spinnerJahr,"#"));
+        spinnerHubraum.setEditor(new JSpinner.NumberEditor(spinnerHubraum,"#"));
+        spinnerPS.setEditor(new JSpinner.NumberEditor(spinnerPS,"#"));
+
+        ASError.setVisible(false);
 
         createTableCars();
         createTableAusstattung();
         createTableMotor();
-        EventListener();
+        createTableMain();
+        eventListenerAuto();
+        eventListenerAusstattung();
+        eventListenerMotor();
+        eventListenerMain();
     }
 }
+
+//TODO Motor Foregin Key Error!
 
     

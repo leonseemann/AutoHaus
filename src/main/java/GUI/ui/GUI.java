@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static SQL.Connect.connect;
 
@@ -56,7 +58,13 @@ public class GUI {
     private JLabel ASErrorCode;
     private JLabel ASError;
     private JTextField textFieldPreis;
+    private JTextField MAINtextFieldATID;
+    private JTextField MAINtextFieldASID;
+    private JTextField MAINtextFieldMTID;
 
+    List<String> autoIDS = new ArrayList<>();
+    List<String> ausstattungIDS = new ArrayList<>();
+    List<String> motorIDS = new ArrayList<>();
 
     /* ----------------------------------- createTable --------------------------*/
 
@@ -94,8 +102,10 @@ public class GUI {
             PreparedStatement stm = connect().prepareStatement(execute);
             ResultSet rs = stm.executeQuery();
 
+
             while (rs.next()) {
                 String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), jaNeinBoolean(rs.getString(4)), jaNeinBoolean(rs.getString(5)), jaNeinBoolean(rs.getString(6)), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10)};
+
                 dtm.addRow(data);
             }
 
@@ -132,28 +142,27 @@ public class GUI {
         }
     }
 
-    private void createTableMain() { //TODO Anfangen
+    private void createTableMain() {
         try {
             DefaultTableModel dtm = new DefaultTableModel(
                     null,
-                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
+                    new String[]{"Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
             );
 
 
-            String sql = "SELECT ATID, Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM Auto JOIN Ausstattung ON Auto.ASID = Ausstattung.ASID JOIN Motor ON Auto.MTID = Motor.MTID ORDER BY Auto.Hersteller,Auto.Typ ASC;";
+            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM Auto JOIN Ausstattung ON Auto.ASID = Ausstattung.ASID JOIN Motor ON Auto.MTID = Motor.MTID ORDER BY Auto.Hersteller,Auto.Typ ASC;";
             PreparedStatement stm = connect().prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while(rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), rs.getString(20)};
+                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), jaNeinBoolean(rs.getString(10)), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19)};
+
                 dtm.addRow(data);
             }
 
-
             tableMain.setModel(dtm);
-
-           /*stm.close();
-           rs.close();*/
+            stm.close();
+            rs.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -469,13 +478,27 @@ public class GUI {
     }
 
     private void eventListenerMain(){
+        tableMain.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
+
+        tableMain.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+            }
+        });
+
         MAINaktualisierenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 reloadTables();
             }
         });
-    }
+    } //TODO IDs funktionsfähig machen, Löschen Button
 
     /* ----------------------------------- setMethoden --------------------------*/
 
@@ -608,8 +631,6 @@ public class GUI {
                 comboBoxFelgenMaterial.setSelectedIndex(0);
                 break;
         }
-
-        System.out.println(tbm.getValueAt(i,3).toString());
 
         if (tbm.getValueAt(i,3).toString().equals("Ja")){
             checkBoxSitzheizung.setSelected(true);
@@ -808,6 +829,6 @@ public class GUI {
 }
 
 //TODO Motor Foregin Key Error!
-//TODO Löschen in Main!
+
 
     

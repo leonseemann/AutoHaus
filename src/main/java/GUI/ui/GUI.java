@@ -808,5 +808,6 @@ public class GUI {
 }
 
 //TODO Motor Foregin Key Error!
+//TODO Löschen in Main!
 
     

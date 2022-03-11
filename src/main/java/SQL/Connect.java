@@ -3,7 +3,7 @@ package SQL;
 import java.sql.*;
 
 public class Connect {
-    public static final String url = "jdbc:mariadb://10.0.0.3:3306/Autohaus";
+    public static final String url = "jdbc:mariadb://localhost:3306/Autohaus";
     public static final String user = "Autohaus";
     public static final String pass = "vbewyfpigq";
 

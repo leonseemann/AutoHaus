@@ -74,7 +74,7 @@ public class GUI {
                     null,
                     new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "ASID", "MTID", "Preis"}
             );
-            String execute = "SELECT * FROM Auto";
+            String execute = "SELECT * FROM auto";
             PreparedStatement stm = connect().prepareStatement(execute);
             ResultSet rs = stm.executeQuery();
 
@@ -98,7 +98,7 @@ public class GUI {
                     null,
                     new String[]{"ASID", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial"}
             );
-            String execute = "SELECT * FROM Ausstattung";
+            String execute = "SELECT * FROM ausstattung";
             PreparedStatement stm = connect().prepareStatement(execute);
             ResultSet rs = stm.executeQuery();
 
@@ -124,7 +124,7 @@ public class GUI {
                     null,
                     new String[]{"MTID", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"}
             );
-            String execute = "SELECT * FROM Motor";
+            String execute = "SELECT * FROM motor";
             PreparedStatement stm = connect().prepareStatement(execute);
             ResultSet rs = stm.executeQuery();
 
@@ -150,12 +150,12 @@ public class GUI {
             );
 
 
-            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM Auto JOIN Ausstattung ON Auto.ASID = Ausstattung.ASID JOIN Motor ON Auto.MTID = Motor.MTID ORDER BY Auto.Hersteller,Auto.Typ ASC;";
+            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN Ausstattung ON Auto.ASID = Ausstattung.ASID JOIN Motor ON Auto.MTID = Motor.MTID ORDER BY Auto.Hersteller,Auto.Typ ASC;";
             PreparedStatement stm = connect().prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while(rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), jaNeinBoolean(rs.getString(10)), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19)};
+                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), jaNeinBoolean(rs.getString(7)), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19)};
 
                 dtm.addRow(data);
             }
@@ -230,7 +230,7 @@ public class GUI {
         ATlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sqlDelete = "DELETE FROM `Auto` WHERE ATID = ?";
+                String sqlDelete = "DELETE FROM auto WHERE ATID = ?";
                 try {
                     PreparedStatement psm = connect().prepareStatement(sqlDelete);
                     psm.setString(1, textFieldAID.getText());
@@ -249,7 +249,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlUpdateAuto = "UPDATE `Auto` SET `Typ` = ?, `Baujahr` = ?, `Hersteller` = ?, `Kommentar` = ?, `ASID` = ?, `MTID` = ?, `Preis` = ? WHERE ATID = ?;";
+                    String sqlUpdateAuto = "UPDATE Auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ? WHERE ATID = ?;";
                     PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
 
                     pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
@@ -360,7 +360,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAusstattung = "DELETE FROM Ausstattung WHERE ASID = ?";
+                    String sqlAusstattung = "DELETE FROM ausstattung WHERE ASID = ?";
                     PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
 
                     pstmAusstattung.setString(1, textFieldAAID.getText());
@@ -460,7 +460,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlMotor = "DELETE FROM Motor WHERE MTID = ?";
+                    String sqlMotor = "DELETE FROM motor WHERE MTID = ?";
                     PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
 
                     pstmMotor.setString(1, textFieldMotorID.getText());

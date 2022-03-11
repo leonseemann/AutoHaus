@@ -23,8 +23,6 @@ public class GUI {
     private JComboBox comboBoxTyp;
     private JComboBox comboBoxHerseller;
     private JTextArea kommentarTextArea;
-    private JSpinner spinnerMotor;
-    private JSpinner spinnerAusstattung;
     private JButton ATeinfügenButton;
     private JButton ATaktialisierenButton;
     private JButton ATlöschenButton;
@@ -61,6 +59,8 @@ public class GUI {
     private JTextField MAINtextFieldATID;
     private JTextField MAINtextFieldASID;
     private JTextField MAINtextFieldMTID;
+    private JTextField textFieldASID;
+    private JTextField textFieldMTID;
 
     List<String> autoIDS = new ArrayList<>();
     List<String> ausstattungIDS = new ArrayList<>();
@@ -150,7 +150,7 @@ public class GUI {
             );
 
 
-            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN Ausstattung ON Auto.ASID = Ausstattung.ASID JOIN Motor ON Auto.MTID = Motor.MTID ORDER BY Auto.Hersteller,Auto.Typ ASC;";
+            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN ausstattung ON auto.ASID = ausstattung.ASID JOIN motor ON auto.MTID = motor.MTID ORDER BY auto.hersteller,auto.typ ASC;";
             PreparedStatement stm = connect().prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
@@ -200,7 +200,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAuto = "INSERT INTO Auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis) VALUES (?, ?, ?, ?, ?, ?, ?);";
+                    String sqlAuto = "INSERT INTO auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis) VALUES (?, ?, ?, ?, ?, ?, ?);";
                     PreparedStatement pstmAuto = connect().prepareStatement(sqlAuto);
 
                     pstmAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
@@ -213,8 +213,8 @@ public class GUI {
                         pstmAuto.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmAuto.setString(5, spinnerAusstattung.getValue().toString());
-                    pstmAuto.setString(6, spinnerMotor.getValue().toString());
+                    pstmAuto.setString(5, textFieldASID.getText());
+                    pstmAuto.setString(6, textFieldMTID.getText());
                     pstmAuto.setString(7, textFieldPreis.getText().replace(",","."));
 
                     pstmAuto.executeUpdate();
@@ -249,7 +249,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlUpdateAuto = "UPDATE Auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ? WHERE ATID = ?;";
+                    String sqlUpdateAuto = "UPDATE auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ? WHERE ATID = ?;";
                     PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
 
                     pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
@@ -262,8 +262,8 @@ public class GUI {
                         pstmUpdateAuto.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmUpdateAuto.setString(5, spinnerAusstattung.getValue().toString());
-                    pstmUpdateAuto.setString(6, spinnerMotor.getValue().toString());
+                    pstmUpdateAuto.setString(5, textFieldASID.getText());
+                    pstmUpdateAuto.setString(6, textFieldMTID.getText());
                     pstmUpdateAuto.setString(7, textFieldPreis.getText().replace(",","."));
                     pstmUpdateAuto.setString(8, textFieldAID.getText());
 
@@ -298,7 +298,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAusstattung = "INSERT INTO Ausstattung (FelgenZoll, Felgenmaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    String sqlAusstattung = "INSERT INTO ausstattung (FelgenZoll, Felgenmaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
                     PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung, Statement.RETURN_GENERATED_KEYS);
 
                     pstmAusstattung.setString(1,spinnerZoll.getValue().toString());
@@ -319,7 +319,7 @@ public class GUI {
 
                     pstmAusstattung.executeUpdate();
 
-                    spinnerAusstattung.setValue(Integer.parseInt(getID(pstmAusstattung)));
+                    textFieldASID.setText(getID(pstmAusstattung));
 
                     reloadTables();
                     setAusstattungZero();
@@ -333,7 +333,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAusstattung = "UPDATE Ausstattung SET FelgenZoll = ?, Felgenmaterial = ?, Sitzheizung = ?, Lenkradheizung = ?, Schiebedach = ?, Farbe = ?, FarbeMaterial = ?, InnenraumMaterial = ?, SitzMaterial = ? WHERE ASID = ?";
+                    String sqlAusstattung = "UPDATE ausstattung SET FelgenZoll = ?, Felgenmaterial = ?, Sitzheizung = ?, Lenkradheizung = ?, Schiebedach = ?, Farbe = ?, FarbeMaterial = ?, InnenraumMaterial = ?, SitzMaterial = ? WHERE ASID = ?";
                     PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
 
                     pstmAusstattung.setString(1, spinnerZoll.getValue().toString());
@@ -410,7 +410,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlMotor = "INSERT INTO Motor (Verbrauch, Getriebe, Kraftstoff, Hubraum, PS) VALUES (?, ?, ?, ?, ?);";
+                    String sqlMotor = "INSERT INTO motor (Verbrauch, Getriebe, Kraftstoff, Hubraum, PS) VALUES (?, ?, ?, ?, ?);";
                     PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor, Statement.RETURN_GENERATED_KEYS);
 
                     pstmMotor.setString(1, textFieldVerbrauch.getText().replace(",","."));
@@ -421,7 +421,7 @@ public class GUI {
 
                     pstmMotor.executeUpdate();
 
-                    spinnerMotor.setValue(Integer.parseInt(getID(pstmMotor)));
+                    textFieldMTID.setText(getID(pstmMotor));
 
                     setMotorZero();
 
@@ -437,7 +437,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlMotor = "UPDATE Motor SET Verbrauch = ?, Getriebe = ?, Kraftstoff = ?, Hubraum = ?, PS = ? WHERE MTID = ?";
+                    String sqlMotor = "UPDATE motor SET Verbrauch = ?, Getriebe = ?, Kraftstoff = ?, Hubraum = ?, PS = ? WHERE MTID = ?";
                     PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
 
                     pstmMotor.setString(1, textFieldVerbrauch.getText().replace(",","."));
@@ -577,9 +577,9 @@ public class GUI {
             kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
         }
 
-        spinnerAusstattung.setValue(Integer.parseInt(tbm.getValueAt(i, 5).toString()));
+        textFieldASID.setText(tbm.getValueAt(i, 5).toString());
 
-        spinnerMotor.setValue(Integer.parseInt(tbm.getValueAt(i, 6).toString()));
+        textFieldMTID.setText(tbm.getValueAt(i, 6).toString());
 
         textFieldPreis.setText(tbm.getValueAt(i,7).toString());
     }
@@ -595,9 +595,9 @@ public class GUI {
 
         kommentarTextArea.setText("");
 
-        spinnerAusstattung.setValue(0);
+        textFieldASID.setText("0");
 
-        spinnerMotor.setValue(0);
+        textFieldMTID.setText("0");
 
         textFieldPreis.setText("0,0");
     }
@@ -769,7 +769,7 @@ public class GUI {
     private void setMotorZero() {
         textFieldMotorID.setText(null);
 
-        textFieldVerbrauch.setText("0");
+        textFieldVerbrauch.setText("0,0");
 
         comboBoxGetriebe.setSelectedIndex(0);
 

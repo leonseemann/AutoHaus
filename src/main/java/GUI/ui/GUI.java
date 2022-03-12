@@ -27,8 +27,8 @@ public class GUI {
     private JButton ATaktialisierenButton;
     private JButton ATlöschenButton;
     private JSpinner spinnerJahr;
-    private JTextField textFieldAID;
-    private JTextField textFieldAAID;
+    private JTextField ATtextFieldATID;
+    private JTextField AStextFieldASID;
     private JSpinner spinnerZoll;
     private JComboBox comboBoxFelgenMaterial;
     private JCheckBox checkBoxSitzheizung;
@@ -41,7 +41,7 @@ public class GUI {
     private JButton ASeinfügenButton;
     private JButton ASaktualisierenButton;
     private JButton ASlöschenButton;
-    private JTextField textFieldMotorID;
+    private JTextField MTtextFieldMTID;
     private JTextField textFieldVerbrauch;
     private JComboBox comboBoxGetriebe;
     private JComboBox comboBoxKraftstoff;
@@ -59,8 +59,8 @@ public class GUI {
     private JTextField MAINtextFieldATID;
     private JTextField MAINtextFieldASID;
     private JTextField MAINtextFieldMTID;
-    private JTextField textFieldASID;
-    private JTextField textFieldMTID;
+    private JTextField ATtextFieldASID;
+    private JTextField ATtextFieldMTID;
 
     List<String> autoIDS = new ArrayList<>();
     List<String> ausstattungIDS = new ArrayList<>();
@@ -146,16 +146,16 @@ public class GUI {
         try {
             DefaultTableModel dtm = new DefaultTableModel(
                     null,
-                    new String[]{"Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
+                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
             );
 
 
-            String sql = "SELECT Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN ausstattung ON auto.ASID = ausstattung.ASID JOIN motor ON auto.MTID = motor.MTID ORDER BY auto.hersteller,auto.typ ASC;";
+            String sql = "SELECT ATID, Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN ausstattung ON auto.ASID = ausstattung.ASID JOIN motor ON auto.MTID = motor.MTID ORDER BY auto.hersteller,auto.typ ASC;";
             PreparedStatement stm = connect().prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while(rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), jaNeinBoolean(rs.getString(7)), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19)};
+                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), jaNeinBoolean(rs.getString(7)), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), rs.getString(20)};
 
                 dtm.addRow(data);
             }
@@ -213,8 +213,8 @@ public class GUI {
                         pstmAuto.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmAuto.setString(5, textFieldASID.getText());
-                    pstmAuto.setString(6, textFieldMTID.getText());
+                    pstmAuto.setString(5, ATtextFieldASID.getText());
+                    pstmAuto.setString(6, ATtextFieldMTID.getText());
                     pstmAuto.setString(7, textFieldPreis.getText().replace(",","."));
 
                     pstmAuto.executeUpdate();
@@ -230,10 +230,10 @@ public class GUI {
         ATlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String sqlDelete = "DELETE FROM auto WHERE ATID = ?";
                 try {
+                    String sqlDelete = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
                     PreparedStatement psm = connect().prepareStatement(sqlDelete);
-                    psm.setString(1, textFieldAID.getText());
+                    psm.setString(1, ATtextFieldATID.getText());
 
                     psm.executeUpdate();
 
@@ -262,10 +262,10 @@ public class GUI {
                         pstmUpdateAuto.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmUpdateAuto.setString(5, textFieldASID.getText());
-                    pstmUpdateAuto.setString(6, textFieldMTID.getText());
+                    pstmUpdateAuto.setString(5, ATtextFieldASID.getText());
+                    pstmUpdateAuto.setString(6, ATtextFieldMTID.getText());
                     pstmUpdateAuto.setString(7, textFieldPreis.getText().replace(",","."));
-                    pstmUpdateAuto.setString(8, textFieldAID.getText());
+                    pstmUpdateAuto.setString(8, ATtextFieldATID.getText());
 
                     pstmUpdateAuto.executeUpdate();
 
@@ -319,7 +319,7 @@ public class GUI {
 
                     pstmAusstattung.executeUpdate();
 
-                    textFieldASID.setText(getID(pstmAusstattung));
+                    ATtextFieldASID.setText(getID(pstmAusstattung));
 
                     reloadTables();
                     setAusstattungZero();
@@ -345,7 +345,7 @@ public class GUI {
                     pstmAusstattung.setString(7, comboBoxFarbMaterial.getSelectedItem().toString());
                     pstmAusstattung.setString(8, comboBoxInnenraumMaterial.getSelectedItem().toString());
                     pstmAusstattung.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(10, textFieldAAID.getText());
+                    pstmAusstattung.setString(10, AStextFieldASID.getText());
 
                     pstmAusstattung.executeUpdate();
 
@@ -363,7 +363,7 @@ public class GUI {
                     String sqlAusstattung = "DELETE FROM ausstattung WHERE ASID = ?";
                     PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
 
-                    pstmAusstattung.setString(1, textFieldAAID.getText());
+                    pstmAusstattung.setString(1, AStextFieldASID.getText());
 
                     pstmAusstattung.executeUpdate();
 
@@ -421,7 +421,7 @@ public class GUI {
 
                     pstmMotor.executeUpdate();
 
-                    textFieldMTID.setText(getID(pstmMotor));
+                    ATtextFieldMTID.setText(getID(pstmMotor));
 
                     setMotorZero();
 
@@ -445,7 +445,7 @@ public class GUI {
                     pstmMotor.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
                     pstmMotor.setString(4, spinnerHubraum.getValue().toString());
                     pstmMotor.setString(5, spinnerPS.getValue().toString());
-                    pstmMotor.setString(6, textFieldMotorID.getText());
+                    pstmMotor.setString(6, MTtextFieldMTID.getText());
 
                     pstmMotor.executeUpdate();
 
@@ -463,7 +463,7 @@ public class GUI {
                     String sqlMotor = "DELETE FROM motor WHERE MTID = ?";
                     PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
 
-                    pstmMotor.setString(1, textFieldMotorID.getText());
+                    pstmMotor.setString(1, MTtextFieldMTID.getText());
 
                     pstmMotor.executeUpdate();
 
@@ -482,13 +482,7 @@ public class GUI {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-            }
-        });
-
-        tableMain.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
+                setMain(tableMain.getSelectedRow(), tableMain.getModel());
             }
         });
 
@@ -498,13 +492,31 @@ public class GUI {
                 reloadTables();
             }
         });
+
+        MAINlöschenButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    String sqlDelete = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
+                    PreparedStatement psm = connect().prepareStatement(sqlDelete);
+                    psm.setString(1, MAINtextFieldATID.getText());
+
+                    psm.executeUpdate();
+
+                    reloadTables();
+                    setAutoZero();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     } //TODO IDs funktionsfähig machen, Löschen Button
 
     /* ----------------------------------- setMethoden --------------------------*/
 
     private void setAuto(int i, TableModel tbm){
 
-        textFieldAID.setText(tbm.getValueAt(i,0).toString());
+        ATtextFieldATID.setText(tbm.getValueAt(i,0).toString());
 
         switch(tbm.getValueAt(i,1).toString()){
             case "Combi":
@@ -577,15 +589,15 @@ public class GUI {
             kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
         }
 
-        textFieldASID.setText(tbm.getValueAt(i, 5).toString());
+        ATtextFieldASID.setText(tbm.getValueAt(i, 5).toString());
 
-        textFieldMTID.setText(tbm.getValueAt(i, 6).toString());
+        ATtextFieldMTID.setText(tbm.getValueAt(i, 6).toString());
 
         textFieldPreis.setText(tbm.getValueAt(i,7).toString());
     }
 
     private void setAutoZero(){
-        textFieldAID.setText("0");
+        ATtextFieldATID.setText("0");
 
         comboBoxTyp.setSelectedIndex(0);
 
@@ -595,16 +607,16 @@ public class GUI {
 
         kommentarTextArea.setText("");
 
-        textFieldASID.setText("0");
+        ATtextFieldASID.setText("0");
 
-        textFieldMTID.setText("0");
+        ATtextFieldMTID.setText("0");
 
         textFieldPreis.setText("0,0");
     }
 
     private void setAusstattung(int i, TableModel tbm){
 
-        textFieldAAID.setText(tbm.getValueAt(i, 0).toString());
+        AStextFieldASID.setText(tbm.getValueAt(i, 0).toString());
 
         spinnerZoll.setValue(Integer.parseInt(tbm.getValueAt(i,1).toString()));
 
@@ -702,7 +714,7 @@ public class GUI {
     }
 
     private void setAusstattungZero() {
-        textFieldAAID.setText("0");
+        AStextFieldASID.setText("0");
 
         spinnerZoll.setValue(0);
 
@@ -724,7 +736,7 @@ public class GUI {
     }
 
     private void setMotor (int i, TableModel tbm) {
-        textFieldMotorID.setText(tbm.getValueAt(i,0).toString());
+        MTtextFieldMTID.setText(tbm.getValueAt(i,0).toString());
 
         textFieldVerbrauch.setText(tbm.getValueAt(i,1).toString());
 
@@ -767,7 +779,7 @@ public class GUI {
     }
 
     private void setMotorZero() {
-        textFieldMotorID.setText(null);
+        MTtextFieldMTID.setText(null);
 
         textFieldVerbrauch.setText("0,0");
 
@@ -780,6 +792,33 @@ public class GUI {
         spinnerPS.setValue(0);
     }
 
+    private void setMain(int i, TableModel tbm){
+        MAINtextFieldATID.setText(tbm.getValueAt(i, 0).toString());
+
+        try {
+            String sql = "SELECT ASID, MTID FROM auto WHERE ATID = ?";
+            PreparedStatement pstm = connect().prepareStatement(sql);
+            pstm.setString(1, MAINtextFieldATID.getText());
+
+            ResultSet rs = pstm.executeQuery();
+
+            rs.next();
+            MAINtextFieldASID.setText(rs.getString(1));
+            MAINtextFieldMTID.setText(rs.getString(2));
+
+            pstm.close();
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setMainZero() {
+        MAINtextFieldATID.setText(null);
+        MAINtextFieldASID.setText(null);
+        MAINtextFieldMTID.setText(null);
+    }
     /* ----------------------------------- Sonstiges --------------------------*/
 
     private static String getID(PreparedStatement ps){

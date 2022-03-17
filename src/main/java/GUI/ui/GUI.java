@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,10 +64,10 @@ public class GUI {
     private JTextField MAINtextFieldMTID;
     private JTextField ATtextFieldASID;
     private JTextField ATtextFieldMTID;
+    private JButton ATbrowse;
+    private JTextField ATbrowseLink;
 
-    List<String> autoIDS = new ArrayList<>();
-    List<String> ausstattungIDS = new ArrayList<>();
-    List<String> motorIDS = new ArrayList<>();
+    public String linkNew;
 
     /* ----------------------------------- createTable --------------------------*/
 
@@ -170,7 +173,7 @@ public class GUI {
 
     /* ----------------------------------- reloadTable --------------------------*/
 
-    private void reloadTables() {
+    public void reloadTables() {
         createTableMotor();
         createTableCars();
         createTableAusstattung();
@@ -200,7 +203,8 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAuto = "INSERT INTO auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis) VALUES (?, ?, ?, ?, ?, ?, ?);";
+                        String sqlAuto = "INSERT INTO auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis, bild) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+
                     PreparedStatement pstmAuto = connect().prepareStatement(sqlAuto);
 
                     pstmAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
@@ -217,11 +221,20 @@ public class GUI {
                     pstmAuto.setString(6, ATtextFieldMTID.getText());
                     pstmAuto.setString(7, textFieldPreis.getText().replace(",","."));
 
+                    if (ATbrowseLink.getText().isBlank()) {
+                        pstmAuto.setString(8, null);
+                    } else {
+                        InputStream in = new FileInputStream(ATbrowseLink.getText());
+                        pstmAuto.setBlob(8, in);
+                    }
+
                     pstmAuto.executeUpdate();
 
                     reloadTables();
                     setAutoZero();
                 } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -249,7 +262,7 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlUpdateAuto = "UPDATE auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ? WHERE ATID = ?;";
+                    String sqlUpdateAuto = "UPDATE auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ?, bild = ? WHERE ATID = ?;";
                     PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
 
                     pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
@@ -265,14 +278,43 @@ public class GUI {
                     pstmUpdateAuto.setString(5, ATtextFieldASID.getText());
                     pstmUpdateAuto.setString(6, ATtextFieldMTID.getText());
                     pstmUpdateAuto.setString(7, textFieldPreis.getText().replace(",","."));
-                    pstmUpdateAuto.setString(8, ATtextFieldATID.getText());
+                    pstmUpdateAuto.setString(9, ATtextFieldATID.getText());
+
+                    if (ATbrowseLink.getText().isBlank()) {
+                        pstmUpdateAuto.setString(8, null);
+                    } else {
+                        InputStream in = new FileInputStream(ATbrowseLink.getText());
+                        pstmUpdateAuto.setBlob(8, in);
+                    }
 
                     pstmUpdateAuto.executeUpdate();
 
                     reloadTables();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
                 }
+            }
+        });
+
+        ATbrowse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Browse browse = new Browse();
+
+                /*JPanel root = browse.getRootPanel();
+                JFrame frame = new JFrame();
+                frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                frame.setContentPane(root);
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+                frame.setVisible(false);*/
+
+
+
+                ATbrowseLink.setText(browse.getLinkFile());
             }
         });
     }
@@ -612,6 +654,8 @@ public class GUI {
         ATtextFieldMTID.setText("0");
 
         textFieldPreis.setText("0,0");
+
+        ATbrowseLink.setText(null);
     }
 
     private void setAusstattung(int i, TableModel tbm){
@@ -867,7 +911,7 @@ public class GUI {
     }
 }
 
-//TODO Motor Foregin Key Error!
+//TODO Fix Blob .bin error in php, upload working!
 
 
     

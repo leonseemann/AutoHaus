@@ -1,3 +1,4 @@
+import GUI.ui.Browse;
 import GUI.ui.GUI;
 
 import javax.swing.*;

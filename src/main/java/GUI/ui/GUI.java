@@ -173,7 +173,7 @@ public class GUI {
 
     /* ----------------------------------- reloadTable --------------------------*/
 
-    public void reloadTables() {
+    private void reloadTables() {
         createTableMotor();
         createTableCars();
         createTableAusstattung();
@@ -281,14 +281,20 @@ public class GUI {
                     pstmUpdateAuto.setString(9, ATtextFieldATID.getText());
 
                     if (ATbrowseLink.getText().isBlank()) {
-                        pstmUpdateAuto.setString(8, null);
+                        String sql = "SELECT bild FROM auto WHERE ATID = ?;";
+                        PreparedStatement pstm = connect().prepareStatement(sql);
+                        pstm.setString(1, ATtextFieldATID.getText());
+                        ResultSet rs = pstm.executeQuery();
+
+                        rs.next();
+                        pstmUpdateAuto.setBlob(8, rs.getBlob("bild"));
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
                         pstmUpdateAuto.setBlob(8, in);
                     }
 
                     pstmUpdateAuto.executeUpdate();
-
+                    ATbrowseLink.setText(null);
                     reloadTables();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -910,8 +916,3 @@ public class GUI {
         eventListenerMain();
     }
 }
-
-//TODO Fix Blob .bin error in php, upload working!
-
-
-    

@@ -1,12 +1,8 @@
 package de.autohaus.ui;
 
-import de.autohaus.logic.DtmTableAusstattung;
-import de.autohaus.logic.DtmTableCars;
-import de.autohaus.logic.DtmTableMain;
-import de.autohaus.logic.DtmTableMotor;
+import de.autohaus.logic.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.*;
 import java.io.FileInputStream;
@@ -22,7 +18,6 @@ import static de.autohaus.model.Connect.connect;
 public class GUI {
     private JPanel rootPanel;
     private JTabbedPane tabbedPane1;
-
     private JTable tableCars;
     private JTable tableAusstattung;
     private JTable tableMotor;
@@ -69,8 +64,6 @@ public class GUI {
     private JTextField ATtextFieldMTID;
     private JButton ATbrowse;
     private JTextField ATbrowseLink;
-
-    public String linkNew;
 
     /* ----------------------------------- createTable --------------------------*/
 
@@ -803,17 +796,6 @@ public class GUI {
         return Integer.toString(id);
     }
 
-    private static String jaNeinBoolean(String x) {
-        switch (x) {
-            case "0":
-                return "Nein";
-            case "1":
-                return "Ja";
-            default:
-                return "Unbekannt";
-        }
-    }
-
     public JPanel getRootPanel() {
         return rootPanel;
     }
@@ -834,4 +816,6 @@ public class GUI {
         eventListenerMotor();
         eventListenerMain();
     }
+
+    //test
 }

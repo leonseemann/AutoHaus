@@ -1,7 +1,5 @@
 package de.autohaus.ui;
 
-import de.autohaus.ui.GUI;
-
 import javax.swing.*;
 
 public class MainGUI {
@@ -38,4 +36,6 @@ public class MainGUI {
             // If Nimbus is not available, you can set the GUI to another look and feel.
         }
     }
+
+
 }

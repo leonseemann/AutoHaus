@@ -13,7 +13,7 @@ public class DtmTableMain {
         try {
             ResultSet rs = new TableMain().getRs();
 
-            DefaultTableModel dtm = new DefaultTableModel(
+            this.dtm = new DefaultTableModel(
                     null,
                     new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
             );
@@ -23,8 +23,6 @@ public class DtmTableMain {
 
                 dtm.addRow(data);
             }
-
-            this.dtm = dtm;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

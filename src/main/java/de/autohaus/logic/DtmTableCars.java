@@ -15,7 +15,7 @@ public class DtmTableCars {
         try {
             ResultSet rs = new TableCars().getRs();
 
-            DefaultTableModel dtm = new DefaultTableModel(
+            this.dtm = new DefaultTableModel(
                     null,
                     new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "ASID", "MTID", "Preis"}
             );
@@ -25,7 +25,6 @@ public class DtmTableCars {
                 dtm.addRow(data);
             }
 
-            this.dtm = dtm;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

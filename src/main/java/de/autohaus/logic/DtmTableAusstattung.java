@@ -13,7 +13,7 @@ public class DtmTableAusstattung {
         try {
             ResultSet rs = new TableAusstattung().getRsTableAusstattung();
 
-            DefaultTableModel dtm = new DefaultTableModel(
+            this.dtm = new DefaultTableModel(
                     null,
                     new String[]{"ASID", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial"}
             );
@@ -23,8 +23,6 @@ public class DtmTableAusstattung {
 
                 dtm.addRow(data);
             }
-
-            this.dtm = dtm;
         } catch (SQLException ex){
             ex.printStackTrace();
         }

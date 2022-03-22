@@ -13,9 +13,7 @@ public class TableMotor {
         try {
             String execute = "SELECT * FROM motor";
             PreparedStatement stm = connect().prepareStatement(execute);
-            ResultSet rs = stm.executeQuery();
-
-            this.rs = rs;
+            this.rs = stm.executeQuery();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static de.autohaus.model.Connect.connect;
 
@@ -115,32 +114,30 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                        String sqlAuto = "INSERT INTO auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis, bild) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+                    PreparedStatement pstm = new InsertAuto().getPstm();
 
-                    PreparedStatement pstmAuto = connect().prepareStatement(sqlAuto);
-
-                    pstmAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
-                    pstmAuto.setString(2, spinnerJahr.getValue().toString());
-                    pstmAuto.setString(3, comboBoxHerseller.getSelectedItem().toString());
+                    pstm.setString(1, comboBoxTyp.getSelectedItem().toString());
+                    pstm.setString(2, spinnerJahr.getValue().toString());
+                    pstm.setString(3, comboBoxHerseller.getSelectedItem().toString());
 
                     if(kommentarTextArea.getText().isBlank()){
-                        pstmAuto.setString(4, null);
+                        pstm.setString(4, null);
                     } else {
-                        pstmAuto.setString(4, kommentarTextArea.getText());
+                        pstm.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmAuto.setString(5, ATtextFieldASID.getText());
-                    pstmAuto.setString(6, ATtextFieldMTID.getText());
-                    pstmAuto.setString(7, textFieldPreis.getText().replace(",","."));
+                    pstm.setString(5, ATtextFieldASID.getText());
+                    pstm.setString(6, ATtextFieldMTID.getText());
+                    pstm.setString(7, textFieldPreis.getText().replace(",","."));
 
                     if (ATbrowseLink.getText().isBlank()) {
-                        pstmAuto.setString(8, null);
+                        pstm.setString(8, null);
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
-                        pstmAuto.setBlob(8, in);
+                        pstm.setBlob(8, in);
                     }
 
-                    pstmAuto.executeUpdate();
+                    pstm.executeUpdate();
 
                     reloadTables();
                     setAutoZero();
@@ -155,18 +152,10 @@ public class GUI {
         ATlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String sqlDelete = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
-                    PreparedStatement psm = connect().prepareStatement(sqlDelete);
-                    psm.setString(1, ATtextFieldATID.getText());
-
-                    psm.executeUpdate();
+                    new DeleteAuto(ATtextFieldATID);
 
                     reloadTables();
                     setAutoZero();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         });
 
@@ -174,38 +163,37 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlUpdateAuto = "UPDATE auto SET Typ = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, ASID = ?, MTID = ?, Preis = ?, bild = ? WHERE ATID = ?;";
-                    PreparedStatement pstmUpdateAuto = connect().prepareStatement(sqlUpdateAuto);
+                    PreparedStatement pstm = new UpdateAuto().getPstm();
 
-                    pstmUpdateAuto.setString(1, comboBoxTyp.getSelectedItem().toString());
-                    pstmUpdateAuto.setString(2, spinnerJahr.getValue().toString());
-                    pstmUpdateAuto.setString(3, comboBoxHerseller.getSelectedItem().toString());
+                    pstm.setString(1, comboBoxTyp.getSelectedItem().toString());
+                    pstm.setString(2, spinnerJahr.getValue().toString());
+                    pstm.setString(3, comboBoxHerseller.getSelectedItem().toString());
 
                     if(kommentarTextArea.getText().isBlank()){
-                        pstmUpdateAuto.setString(4, null);
+                        pstm.setString(4, null);
                     } else {
-                        pstmUpdateAuto.setString(4, kommentarTextArea.getText());
+                        pstm.setString(4, kommentarTextArea.getText());
                     }
 
-                    pstmUpdateAuto.setString(5, ATtextFieldASID.getText());
-                    pstmUpdateAuto.setString(6, ATtextFieldMTID.getText());
-                    pstmUpdateAuto.setString(7, textFieldPreis.getText().replace(",","."));
-                    pstmUpdateAuto.setString(9, ATtextFieldATID.getText());
+                    pstm.setString(5, ATtextFieldASID.getText());
+                    pstm.setString(6, ATtextFieldMTID.getText());
+                    pstm.setString(7, textFieldPreis.getText().replace(",","."));
+                    pstm.setString(9, ATtextFieldATID.getText());
 
                     if (ATbrowseLink.getText().isBlank()) {
                         String sql = "SELECT bild FROM auto WHERE ATID = ?;";
-                        PreparedStatement pstm = connect().prepareStatement(sql);
+                        PreparedStatement pstmSelect = connect().prepareStatement(sql);
                         pstm.setString(1, ATtextFieldATID.getText());
                         ResultSet rs = pstm.executeQuery();
 
                         rs.next();
-                        pstmUpdateAuto.setBlob(8, rs.getBlob("bild"));
+                        pstm.setBlob(8, rs.getBlob("bild"));
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
-                        pstmUpdateAuto.setBlob(8, in);
+                        pstm.setBlob(8, in);
                     }
 
-                    pstmUpdateAuto.executeUpdate();
+                    pstm.executeUpdate();
                     ATbrowseLink.setText(null);
                     reloadTables();
                 } catch (SQLException ex) {
@@ -219,20 +207,7 @@ public class GUI {
         ATbrowse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Browse browse = new Browse();
-
-                /*JPanel root = browse.getRootPanel();
-                JFrame frame = new JFrame();
-                frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-                frame.setContentPane(root);
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-                frame.setVisible(false);*/
-
-
-
-                ATbrowseLink.setText(browse.getLinkFile());
+                ATbrowseLink.setText(new Browse().getLinkFile());
             }
         });
     }
@@ -258,11 +233,10 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAusstattung = "INSERT INTO ausstattung (FelgenZoll, Felgenmaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung, Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement pstmAusstattung = new InsertAusstattung().getPstm();
 
                     pstmAusstattung.setString(1,spinnerZoll.getValue().toString());
-                    pstmAusstattung.setString(2, comboBoxFelgenMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setObject(2, comboBoxFelgenMaterial.getSelectedItem());
                     pstmAusstattung.setBoolean(3,checkBoxSitzheizung.isSelected());
                     pstmAusstattung.setBoolean(4,checkBoxLenkradheizung.isSelected());
                     pstmAusstattung.setBoolean(5,checkBoxSchiebedach.isSelected());
@@ -273,9 +247,9 @@ public class GUI {
                         pstmAusstattung.setString(6, textFieldFarbe.getText());
                     }
 
-                    pstmAusstattung.setString(7,comboBoxFarbMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(8,comboBoxInnenraumMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
+                    pstmAusstattung.setObject(7,comboBoxFarbMaterial.getSelectedItem());
+                    pstmAusstattung.setObject(8,comboBoxInnenraumMaterial.getSelectedItem());
+                    pstmAusstattung.setObject(9, comboBoxSitzMaterial.getSelectedItem());
 
                     pstmAusstattung.executeUpdate();
 
@@ -293,21 +267,20 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlAusstattung = "UPDATE ausstattung SET FelgenZoll = ?, Felgenmaterial = ?, Sitzheizung = ?, Lenkradheizung = ?, Schiebedach = ?, Farbe = ?, FarbeMaterial = ?, InnenraumMaterial = ?, SitzMaterial = ? WHERE ASID = ?";
-                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
+                    PreparedStatement pstm = new UpdateAusstattung().getPstm();
 
-                    pstmAusstattung.setString(1, spinnerZoll.getValue().toString());
-                    pstmAusstattung.setString(2, comboBoxFelgenMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setBoolean(3, checkBoxSitzheizung.isSelected());
-                    pstmAusstattung.setBoolean(4, checkBoxLenkradheizung.isSelected());
-                    pstmAusstattung.setBoolean(5, checkBoxSchiebedach.isSelected());
-                    pstmAusstattung.setString(6, textFieldFarbe.getText());
-                    pstmAusstattung.setString(7, comboBoxFarbMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(8, comboBoxInnenraumMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
-                    pstmAusstattung.setString(10, AStextFieldASID.getText());
+                    pstm.setString(1, spinnerZoll.getValue().toString());
+                    pstm.setString(2, comboBoxFelgenMaterial.getSelectedItem().toString());
+                    pstm.setBoolean(3, checkBoxSitzheizung.isSelected());
+                    pstm.setBoolean(4, checkBoxLenkradheizung.isSelected());
+                    pstm.setBoolean(5, checkBoxSchiebedach.isSelected());
+                    pstm.setString(6, textFieldFarbe.getText());
+                    pstm.setString(7, comboBoxFarbMaterial.getSelectedItem().toString());
+                    pstm.setString(8, comboBoxInnenraumMaterial.getSelectedItem().toString());
+                    pstm.setString(9, comboBoxSitzMaterial.getSelectedItem().toString());
+                    pstm.setString(10, AStextFieldASID.getText());
 
-                    pstmAusstattung.executeUpdate();
+                    pstm.executeUpdate();
 
                     reloadTables();
                 } catch (SQLException ex) {
@@ -319,32 +292,8 @@ public class GUI {
         ASlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String sqlAusstattung = "DELETE FROM ausstattung WHERE ASID = ?";
-                    PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung);
-
-                    pstmAusstattung.setString(1, AStextFieldASID.getText());
-
-                    pstmAusstattung.executeUpdate();
-
-                    reloadTables();
-                } catch (SQLException ex) {
-                    if (ex.toString().startsWith("java.sql.SQLIntegrityConstraintViolationException: Cannot delete or update a parent row: a foreign key constraint fails")) {
-                        System.out.println("Foregin Key in Use!");
-                        ASError.setVisible(true);
-                        ASErrorCode.setText("Foregin Key in Use!");
-                        new java.util.Timer().schedule(
-                                new java.util.TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        ASErrorCode.setText(null);
-                                        ASError.setVisible(false);
-                                    }
-                                },
-                                2000
-                        );
-                    }
-                }
+               new DeleteAusstattung(AStextFieldASID);
+               reloadTables();
             }
         });
     }
@@ -370,18 +319,17 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlMotor = "INSERT INTO motor (Verbrauch, Getriebe, Kraftstoff, Hubraum, PS) VALUES (?, ?, ?, ?, ?);";
-                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor, Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement pstm = new InsertMotor().getPstm();
 
-                    pstmMotor.setString(1, textFieldVerbrauch.getText().replace(",","."));
-                    pstmMotor.setString(2, comboBoxGetriebe.getSelectedItem().toString());
-                    pstmMotor.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
-                    pstmMotor.setString(4, spinnerHubraum.getValue().toString());
-                    pstmMotor.setString(5, spinnerPS.getValue().toString());
+                    pstm.setString(1, textFieldVerbrauch.getText().replace(",","."));
+                    pstm.setString(2, comboBoxGetriebe.getSelectedItem().toString());
+                    pstm.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
+                    pstm.setString(4, spinnerHubraum.getValue().toString());
+                    pstm.setString(5, spinnerPS.getValue().toString());
 
-                    pstmMotor.executeUpdate();
+                    pstm.executeUpdate();
 
-                    ATtextFieldMTID.setText(getID(pstmMotor));
+                    ATtextFieldMTID.setText(getID(pstm));
 
                     setMotorZero();
 
@@ -397,17 +345,16 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String sqlMotor = "UPDATE motor SET Verbrauch = ?, Getriebe = ?, Kraftstoff = ?, Hubraum = ?, PS = ? WHERE MTID = ?";
-                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
+                    PreparedStatement pstm = new UpdateMotor().getPstm();
 
-                    pstmMotor.setString(1, textFieldVerbrauch.getText().replace(",","."));
-                    pstmMotor.setString(2, comboBoxGetriebe.getSelectedItem().toString());
-                    pstmMotor.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
-                    pstmMotor.setString(4, spinnerHubraum.getValue().toString());
-                    pstmMotor.setString(5, spinnerPS.getValue().toString());
-                    pstmMotor.setString(6, MTtextFieldMTID.getText());
+                    pstm.setString(1, textFieldVerbrauch.getText().replace(",","."));
+                    pstm.setString(2, comboBoxGetriebe.getSelectedItem().toString());
+                    pstm.setString(3, comboBoxKraftstoff.getSelectedItem().toString());
+                    pstm.setString(4, spinnerHubraum.getValue().toString());
+                    pstm.setString(5, spinnerPS.getValue().toString());
+                    pstm.setString(6, MTtextFieldMTID.getText());
 
-                    pstmMotor.executeUpdate();
+                    pstm.executeUpdate();
 
                     reloadTables();
                 } catch (SQLException ex) {
@@ -419,20 +366,9 @@ public class GUI {
         MTlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String sqlMotor = "DELETE FROM motor WHERE MTID = ?";
-                    PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor);
-
-                    pstmMotor.setString(1, MTtextFieldMTID.getText());
-
-                    pstmMotor.executeUpdate();
-
+                    new DeleteMotor(MTtextFieldMTID);
                     setMotorZero();
-
                     reloadTables();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         });
     }
@@ -470,7 +406,7 @@ public class GUI {
                 }
             }
         });
-    } //TODO IDs funktionsfähig machen, Löschen Button
+    } //TODO in Logic verschieben
 
     /* ----------------------------------- setMethoden --------------------------*/
 

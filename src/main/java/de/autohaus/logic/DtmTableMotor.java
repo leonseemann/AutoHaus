@@ -13,7 +13,7 @@ public class DtmTableMotor {
         try {
             ResultSet rs = new TableMotor().getRs();
 
-            DefaultTableModel dtm = new DefaultTableModel(
+            this.dtm = new DefaultTableModel(
                     null,
                     new String[]{"MTID", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"}
             );
@@ -23,8 +23,6 @@ public class DtmTableMotor {
                 String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)};
                 dtm.addRow(data);
             }
-
-            this.dtm = dtm;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

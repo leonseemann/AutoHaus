@@ -13,9 +13,7 @@ public class TableAusstattung {
         try {
             String execute = "SELECT * FROM ausstattung";
             PreparedStatement stm = connect().prepareStatement(execute);
-            ResultSet rs = stm.executeQuery();
-
-            this.rs = rs;
+            this.rs = stm.executeQuery();
         } catch (SQLException ex){
             ex.printStackTrace();
         }

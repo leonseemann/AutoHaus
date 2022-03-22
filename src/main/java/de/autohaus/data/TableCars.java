@@ -14,9 +14,7 @@ public class TableCars {
             String execute = "SELECT * FROM auto";
             PreparedStatement stm = connect().prepareStatement(execute);
             ResultSet rs;
-            rs = stm.executeQuery();
-
-            this.rs = rs;
+            this.rs = stm.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }

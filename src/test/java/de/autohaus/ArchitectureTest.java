@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
+import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
 
 public class ArchitectureTest {
 
@@ -45,5 +46,10 @@ public class ArchitectureTest {
     public void CheckDataDependencies(){
         noClasses().that().resideInAPackage("..de.autohaus.data..").should().dependOnClassesThat()
                 .resideOutsideOfPackages("..de.autohaus.data..", "..de.autohaus.model..","..java..").check(importedClasses);
+    }
+
+    @Test
+    public void CheckCyclicDependencies() {
+        slices().matching("de.autohaus.(*)..").should().beFreeOfCycles().check(importedClasses);
     }
 }

@@ -1,4 +1,4 @@
-package GUI.ui;
+package de.autohaus.ui;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;

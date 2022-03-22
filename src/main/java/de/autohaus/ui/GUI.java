@@ -1,4 +1,9 @@
-package GUI.ui;
+package de.autohaus.ui;
+
+import de.autohaus.logic.DtmTableAusstattung;
+import de.autohaus.logic.DtmTableCars;
+import de.autohaus.logic.DtmTableMain;
+import de.autohaus.logic.DtmTableMotor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,10 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-import static SQL.Connect.connect;
+import static de.autohaus.model.Connect.connect;
 
 public class GUI {
     private JPanel rootPanel;
@@ -72,103 +75,19 @@ public class GUI {
     /* ----------------------------------- createTable --------------------------*/
 
     private void createTableCars() {
-        try {
-            DefaultTableModel dtm = new DefaultTableModel(
-                    null,
-                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "ASID", "MTID", "Preis"}
-            );
-            String execute = "SELECT * FROM auto";
-            PreparedStatement stm = connect().prepareStatement(execute);
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)};
-                dtm.addRow(data);
-            }
-
-            tableCars.setModel(dtm);
-
-            stm.close();
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        tableCars.setModel(new DtmTableCars().getDtm());
     }
 
     private void createTableAusstattung(){
-        try {
-            DefaultTableModel dtm = new DefaultTableModel(
-                    null,
-                    new String[]{"ASID", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial"}
-            );
-            String execute = "SELECT * FROM ausstattung";
-            PreparedStatement stm = connect().prepareStatement(execute);
-            ResultSet rs = stm.executeQuery();
-
-
-            while (rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), jaNeinBoolean(rs.getString(4)), jaNeinBoolean(rs.getString(5)), jaNeinBoolean(rs.getString(6)), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10)};
-
-                dtm.addRow(data);
-            }
-
-            tableAusstattung.setModel(dtm);
-
-            stm.close();
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        tableAusstattung.setModel(new DtmTableAusstattung().getDtm());
     }
 
     private void createTableMotor() {
-        try {
-            DefaultTableModel dtm = new DefaultTableModel(
-                    null,
-                    new String[]{"MTID", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS"}
-            );
-            String execute = "SELECT * FROM motor";
-            PreparedStatement stm = connect().prepareStatement(execute);
-            ResultSet rs = stm.executeQuery();
-
-            while (rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)};
-                dtm.addRow(data);
-            }
-
-            tableMotor.setModel(dtm);
-
-            stm.close();
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            tableMotor.setModel(new DtmTableMotor().getDtm());
     }
 
     private void createTableMain() {
-        try {
-            DefaultTableModel dtm = new DefaultTableModel(
-                    null,
-                    new String[]{"ATID", "Typ", "Baujahr", "Hersteller", "Kommentar", "FelgenZoll", "FelgenMaterial", "Sitzheizung?", "Lenkradheizung?", "Schiebedach?", "Farbe", "FarbeMaterial", "InnenraumMaterial", "SitzMaterial", "Verbrauch", "Getriebe", "Kraftstoff", "Hubraum", "PS", "Preis"}
-            );
-
-
-            String sql = "SELECT ATID, Typ, Baujahr, Hersteller, Kommentar, FelgenZoll, FelgenMaterial, Sitzheizung, Lenkradheizung, Schiebedach, Farbe, FarbeMaterial, InnenraumMaterial, SitzMaterial, Verbrauch, Getriebe, Kraftstoff, Hubraum, PS, Preis FROM auto JOIN ausstattung ON auto.ASID = ausstattung.ASID JOIN motor ON auto.MTID = motor.MTID ORDER BY auto.hersteller,auto.typ ASC;";
-            PreparedStatement stm = connect().prepareStatement(sql);
-            ResultSet rs = stm.executeQuery();
-
-            while(rs.next()) {
-                String[] data = {rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), jaNeinBoolean(rs.getString(7)), jaNeinBoolean(rs.getString(8)), jaNeinBoolean(rs.getString(9)), rs.getString(10), rs.getString(11), rs.getString(12), rs.getString(13), rs.getString(14), rs.getString(15), rs.getString(16), rs.getString(17), rs.getString(18), rs.getString(19), rs.getString(20)};
-
-                dtm.addRow(data);
-            }
-
-            tableMain.setModel(dtm);
-            stm.close();
-            rs.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+            tableMain.setModel(new DtmTableMain().getDtm());
     }
 
     /* ----------------------------------- reloadTable --------------------------*/

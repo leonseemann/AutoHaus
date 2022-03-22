@@ -1,4 +1,4 @@
-import SQL.Connect;
+import de.autohaus.model.Connect;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

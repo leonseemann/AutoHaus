@@ -1,5 +1,6 @@
-import GUI.ui.Browse;
-import GUI.ui.GUI;
+package de.autohaus.ui;
+
+import de.autohaus.ui.GUI;
 
 import javax.swing.*;
 

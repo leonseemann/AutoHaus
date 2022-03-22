@@ -19,11 +19,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
-  package:
-    needs: [setup]
-    runs-on: ubuntu-latest
-    steps:
-      - name: compile
-        run: mvn clean install
+    - name: compile
+      run: mvn clean install
+      
 

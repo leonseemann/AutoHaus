@@ -816,6 +816,4 @@ public class GUI {
         eventListenerMotor();
         eventListenerMain();
     }
-
-    //test2
 }

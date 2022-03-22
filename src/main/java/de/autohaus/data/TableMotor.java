@@ -1,5 +1,7 @@
 package de.autohaus.data;
 
+import de.autohaus.logic.DtmTableMotor;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,5 +25,9 @@ public class TableMotor {
 
     public ResultSet getRs() {
         return rs;
+    }
+
+    private void test() {
+        DtmTableMotor dtm = new DtmTableMotor();
     }
 }

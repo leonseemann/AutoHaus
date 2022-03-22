@@ -1,7 +1,5 @@
 package de.autohaus.data;
 
-import de.autohaus.logic.DtmTableMain;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,9 +23,5 @@ public class TableMain {
 
     public ResultSet getRs() {
         return rs;
-    }
-
-    private void test(){
-        DtmTableMain dtm = new DtmTableMain();
     }
 }

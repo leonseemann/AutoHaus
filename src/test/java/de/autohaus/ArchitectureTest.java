@@ -1,4 +1,4 @@
-package archunit;
+package de.autohaus;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;

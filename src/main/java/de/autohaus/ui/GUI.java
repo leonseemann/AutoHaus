@@ -64,6 +64,16 @@ public class GUI {
     private JButton ATbrowse;
     private JTextField ATbrowseLink;
 
+    private String BenutzerID;
+
+    public void setBenutzerID(String benutzerID) {
+        BenutzerID = benutzerID;
+    }
+
+    public String getBenutzerID() {
+        return BenutzerID;
+    }
+
     /* ----------------------------------- createTable --------------------------*/
 
     private void createTableCars() {
@@ -139,6 +149,8 @@ public class GUI {
 
                     pstm.executeUpdate();
 
+                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", getID(pstm));
+
                     reloadTables();
                     setAutoZero();
                 } catch (SQLException ex) {
@@ -152,7 +164,9 @@ public class GUI {
         ATlöschenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                    new DeleteAuto(ATtextFieldATID);
+                    DeleteAuto da = new DeleteAuto(ATtextFieldATID);
+
+                    new InsertLogs(getBenutzerID(), "geloescht", "Auto", ATtextFieldATID.getText());
 
                     reloadTables();
                     setAutoZero();
@@ -183,17 +197,19 @@ public class GUI {
                     if (ATbrowseLink.getText().isBlank()) {
                         String sql = "SELECT bild FROM auto WHERE ATID = ?;";
                         PreparedStatement pstmSelect = connect().prepareStatement(sql);
-                        pstm.setString(1, ATtextFieldATID.getText());
-                        ResultSet rs = pstm.executeQuery();
+                        pstmSelect.setString(1, ATtextFieldATID.getText());
+                        ResultSet rsSelect = pstmSelect.executeQuery();
 
-                        rs.next();
-                        pstm.setBlob(8, rs.getBlob("bild"));
+                        rsSelect.next();
+                        pstm.setBlob(8, rsSelect.getBlob("bild"));
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
                         pstm.setBlob(8, in);
                     }
 
                     pstm.executeUpdate();
+
+                    new InsertLogs(getBenutzerID(), "editiert", "Auto", ATtextFieldATID.getText());
                     ATbrowseLink.setText(null);
                     reloadTables();
                 } catch (SQLException ex) {
@@ -233,27 +249,29 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    PreparedStatement pstmAusstattung = new InsertAusstattung().getPstm();
+                    PreparedStatement pstm = new InsertAusstattung().getPstm();
 
-                    pstmAusstattung.setString(1,spinnerZoll.getValue().toString());
-                    pstmAusstattung.setObject(2, comboBoxFelgenMaterial.getSelectedItem());
-                    pstmAusstattung.setBoolean(3,checkBoxSitzheizung.isSelected());
-                    pstmAusstattung.setBoolean(4,checkBoxLenkradheizung.isSelected());
-                    pstmAusstattung.setBoolean(5,checkBoxSchiebedach.isSelected());
+                    pstm.setString(1,spinnerZoll.getValue().toString());
+                    pstm.setObject(2, comboBoxFelgenMaterial.getSelectedItem());
+                    pstm.setBoolean(3,checkBoxSitzheizung.isSelected());
+                    pstm.setBoolean(4,checkBoxLenkradheizung.isSelected());
+                    pstm.setBoolean(5,checkBoxSchiebedach.isSelected());
 
                     if(textFieldFarbe.getText().isBlank()) {
-                        pstmAusstattung.setString(6, null);
+                        pstm.setString(6, null);
                     } else {
-                        pstmAusstattung.setString(6, textFieldFarbe.getText());
+                        pstm.setString(6, textFieldFarbe.getText());
                     }
 
-                    pstmAusstattung.setObject(7,comboBoxFarbMaterial.getSelectedItem());
-                    pstmAusstattung.setObject(8,comboBoxInnenraumMaterial.getSelectedItem());
-                    pstmAusstattung.setObject(9, comboBoxSitzMaterial.getSelectedItem());
+                    pstm.setObject(7,comboBoxFarbMaterial.getSelectedItem());
+                    pstm.setObject(8,comboBoxInnenraumMaterial.getSelectedItem());
+                    pstm.setObject(9, comboBoxSitzMaterial.getSelectedItem());
 
-                    pstmAusstattung.executeUpdate();
+                    pstm.executeUpdate();
 
-                    ATtextFieldASID.setText(getID(pstmAusstattung));
+                    ATtextFieldASID.setText(getID(pstm));
+
+                    new InsertLogs(getBenutzerID(), "erstellt", "Ausstattung", getID(pstm));
 
                     reloadTables();
                     setAusstattungZero();
@@ -282,6 +300,8 @@ public class GUI {
 
                     pstm.executeUpdate();
 
+                    new InsertLogs(getBenutzerID(), "editiert", "Ausstattung", AStextFieldASID.getText());
+
                     reloadTables();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -293,6 +313,9 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                new DeleteAusstattung(AStextFieldASID);
+
+                new InsertLogs(getBenutzerID(), "geloescht", "Ausstattung", AStextFieldASID.getText());
+
                reloadTables();
             }
         });
@@ -331,6 +354,8 @@ public class GUI {
 
                     ATtextFieldMTID.setText(getID(pstm));
 
+                    new InsertLogs(getBenutzerID(), "erstellt", "Motor", getID(pstm));
+
                     setMotorZero();
 
                     reloadTables();
@@ -356,6 +381,8 @@ public class GUI {
 
                     pstm.executeUpdate();
 
+                    new InsertLogs(getBenutzerID(), "editiert", "Motor", MTtextFieldMTID.getText());
+
                     reloadTables();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -367,6 +394,9 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                     new DeleteMotor(MTtextFieldMTID);
+
+                new InsertLogs(getBenutzerID(), "geloescht", "Motor", MTtextFieldMTID.getText());
+
                     setMotorZero();
                     reloadTables();
             }
@@ -392,21 +422,15 @@ public class GUI {
         MAINlöschenButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    String sqlDelete = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
-                    PreparedStatement psm = connect().prepareStatement(sqlDelete);
-                    psm.setString(1, MAINtextFieldATID.getText());
+                    new DeleteMain(MAINtextFieldATID);
 
-                    psm.executeUpdate();
+                    new InsertLogs(getBenutzerID(), "geloescht", "Main", MAINtextFieldATID.getText());
 
                     reloadTables();
                     setAutoZero();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         });
-    } //TODO in Logic verschieben
+    }
 
     /* ----------------------------------- setMethoden --------------------------*/
 

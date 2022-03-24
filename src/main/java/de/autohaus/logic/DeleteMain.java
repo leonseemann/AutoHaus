@@ -6,11 +6,11 @@ import java.sql.SQLException;
 
 import static de.autohaus.model.Connect.connect;
 
-public class DeleteAuto {
+public class DeleteMain {
 
     private PreparedStatement pstm;
 
-    public DeleteAuto(JTextField id) {
+    public DeleteMain(JTextField id) {
         try {
             String sql = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
             this.pstm = connect().prepareStatement(sql);

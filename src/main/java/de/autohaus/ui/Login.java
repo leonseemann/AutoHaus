@@ -38,9 +38,16 @@ public class Login {
                     frame.setVisible(true);
 
                     getLogin().setVisible(false);
+                    ui.setBenutzerID(textField1.getText());
                 } else {
                     LIerror.setVisible(true);
                 }
+            }
+        });
+        abbrechenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
             }
         });
     }

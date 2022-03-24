@@ -63,6 +63,7 @@ public class GUI {
     private JTextField ATtextFieldMTID;
     private JButton ATbrowse;
     private JTextField ATbrowseLink;
+    private JTextField ATtextFieldModell;
 
     private String BenutzerID;
 
@@ -127,29 +128,30 @@ public class GUI {
                     PreparedStatement pstm = new InsertAuto().getPstm();
 
                     pstm.setString(1, comboBoxTyp.getSelectedItem().toString());
-                    pstm.setString(2, spinnerJahr.getValue().toString());
-                    pstm.setString(3, comboBoxHerseller.getSelectedItem().toString());
+                    pstm.setString(2, ATtextFieldModell.getText());
+                    pstm.setString(3, spinnerJahr.getValue().toString());
+                    pstm.setString(4, comboBoxHerseller.getSelectedItem().toString());
 
                     if(kommentarTextArea.getText().isBlank()){
-                        pstm.setString(4, null);
+                        pstm.setString(5, null);
                     } else {
-                        pstm.setString(4, kommentarTextArea.getText());
+                        pstm.setString(5, kommentarTextArea.getText());
                     }
 
-                    pstm.setString(5, ATtextFieldASID.getText());
-                    pstm.setString(6, ATtextFieldMTID.getText());
-                    pstm.setString(7, textFieldPreis.getText().replace(",","."));
+                    pstm.setString(6, ATtextFieldASID.getText());
+                    pstm.setString(7, ATtextFieldMTID.getText());
+                    pstm.setString(8, textFieldPreis.getText().replace(",","."));
 
                     if (ATbrowseLink.getText().isBlank()) {
-                        pstm.setString(8, null);
+                        pstm.setString(9, null);
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
-                        pstm.setBlob(8, in);
+                        pstm.setBlob(9, in);
                     }
 
                     pstm.executeUpdate();
 
-                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", getID(pstm));
+                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", getID(pstm), ATtextFieldModell.getText());
 
                     reloadTables();
                     setAutoZero();
@@ -180,19 +182,18 @@ public class GUI {
                     PreparedStatement pstm = new UpdateAuto().getPstm();
 
                     pstm.setString(1, comboBoxTyp.getSelectedItem().toString());
-                    pstm.setString(2, spinnerJahr.getValue().toString());
-                    pstm.setString(3, comboBoxHerseller.getSelectedItem().toString());
+                    pstm.setString(2, ATtextFieldModell.getText());
+                    pstm.setString(3, spinnerJahr.getValue().toString());
+                    pstm.setString(4, comboBoxHerseller.getSelectedItem().toString());
 
                     if(kommentarTextArea.getText().isBlank()){
-                        pstm.setString(4, null);
+                        pstm.setString(5, null);
                     } else {
-                        pstm.setString(4, kommentarTextArea.getText());
+                        pstm.setString(5, kommentarTextArea.getText());
                     }
 
-                    pstm.setString(5, ATtextFieldASID.getText());
-                    pstm.setString(6, ATtextFieldMTID.getText());
-                    pstm.setString(7, textFieldPreis.getText().replace(",","."));
-                    pstm.setString(9, ATtextFieldATID.getText());
+                    pstm.setString(6, textFieldPreis.getText().replace(",","."));
+                    pstm.setString(8, ATtextFieldATID.getText());
 
                     if (ATbrowseLink.getText().isBlank()) {
                         String sql = "SELECT bild FROM auto WHERE ATID = ?;";
@@ -201,15 +202,15 @@ public class GUI {
                         ResultSet rsSelect = pstmSelect.executeQuery();
 
                         rsSelect.next();
-                        pstm.setBlob(8, rsSelect.getBlob("bild"));
+                        pstm.setBlob(7, rsSelect.getBlob("bild"));
                     } else {
                         InputStream in = new FileInputStream(ATbrowseLink.getText());
-                        pstm.setBlob(8, in);
+                        pstm.setBlob(7, in);
                     }
 
                     pstm.executeUpdate();
 
-                    new InsertLogs(getBenutzerID(), "editiert", "Auto", ATtextFieldATID.getText());
+                    new InsertLogs(getBenutzerID(), "editiert", "Auto", ATtextFieldATID.getText(), ATtextFieldModell.getText());
                     ATbrowseLink.setText(null);
                     reloadTables();
                 } catch (SQLException ex) {
@@ -403,12 +404,15 @@ public class GUI {
         });
     }
 
+    private String modellMain;
+
     private void eventListenerMain(){
         tableMain.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 setMain(tableMain.getSelectedRow(), tableMain.getModel());
+                modellMain = tableMain.getValueAt(tableMain.getSelectedRow(), 3).toString();
             }
         });
 
@@ -424,7 +428,7 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                     new DeleteMain(MAINtextFieldATID);
 
-                    new InsertLogs(getBenutzerID(), "geloescht", "Main", MAINtextFieldATID.getText());
+                    new InsertLogs(getBenutzerID(), "geloescht", "Main", MAINtextFieldATID.getText(), modellMain);
 
                     reloadTables();
                     setAutoZero();
@@ -462,9 +466,11 @@ public class GUI {
                 break;
         }
 
-        spinnerJahr.setValue(Integer.parseInt(tbm.getValueAt(i,2).toString()));
+        ATtextFieldModell.setText(tbm.getValueAt(i,2).toString());
 
-        switch(tbm.getValueAt(i,3).toString()){
+        spinnerJahr.setValue(Integer.parseInt(tbm.getValueAt(i,3).toString()));
+
+        switch(tbm.getValueAt(i,4).toString()){
             case "BMW":
                 comboBoxHerseller.setSelectedIndex(1);
                 break;
@@ -503,17 +509,17 @@ public class GUI {
                 break;
         }
 
-        if(tbm.getValueAt(i,4) == null) {
+        if(tbm.getValueAt(i,5) == null) {
             kommentarTextArea.setText("NULL");
         } else {
-            kommentarTextArea.setText(tbm.getValueAt(i,4).toString());
+            kommentarTextArea.setText(tbm.getValueAt(i,5).toString());
         }
 
-        ATtextFieldASID.setText(tbm.getValueAt(i, 5).toString());
+        ATtextFieldASID.setText(tbm.getValueAt(i, 6).toString());
 
-        ATtextFieldMTID.setText(tbm.getValueAt(i, 6).toString());
+        ATtextFieldMTID.setText(tbm.getValueAt(i, 7).toString());
 
-        textFieldPreis.setText(tbm.getValueAt(i,7).toString());
+        textFieldPreis.setText(tbm.getValueAt(i,8).toString());
     }
 
     private void setAutoZero(){

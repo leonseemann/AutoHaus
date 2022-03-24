@@ -1,6 +1,7 @@
 package de.autohaus.ui;
 
 import de.autohaus.logic.CheckLogin;
+import de.autohaus.logic.InsertLogs;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,6 +39,9 @@ public class Login {
                     frame.setVisible(true);
 
                     getLogin().setVisible(false);
+
+                    new InsertLogs(textField1.getText(), "Login");
+
                     ui.setBenutzerID(textField1.getText());
                 } else {
                     LIerror.setVisible(true);

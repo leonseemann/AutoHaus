@@ -11,7 +11,7 @@ public class InsertAuto {
 
     public InsertAuto() {
         try {
-            String sql = "INSERT INTO auto (Typ, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis, bild) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO auto (Typ, Modell, Baujahr, Hersteller, Kommentar, ASID, MTID, Preis, bild) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             this.pstm = connect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException e) {
             e.printStackTrace();

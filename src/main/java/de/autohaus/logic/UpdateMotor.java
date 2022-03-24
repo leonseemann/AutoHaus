@@ -10,7 +10,7 @@ public class UpdateMotor {
 
     public UpdateMotor() {
         try {
-            String sqlAusstattung = "UPDATE ausstattung SET FelgenZoll = ?, Felgenmaterial = ?, Sitzheizung = ?, Lenkradheizung = ?, Schiebedach = ?, Farbe = ?, FarbeMaterial = ?, InnenraumMaterial = ?, SitzMaterial = ? WHERE ASID = ?";
+            String sqlAusstattung = "UPDATE motor SET verbrauch = ?, getriebe = ?, kraftstoff = ?, hubraum = ?, ps = ? WHERE MTID = ?";
             this.pstm = connect().prepareStatement(sqlAusstattung);
         } catch (SQLException ex) {
             ex.printStackTrace();

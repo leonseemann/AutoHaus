@@ -4,7 +4,7 @@ import de.autohaus.data.Login;
 
 
 public class CheckLogin extends Login {
-    private String passwort;
+    private final String passwort;
 
     public CheckLogin(String user, String passwort){
         super(user);
@@ -13,10 +13,6 @@ public class CheckLogin extends Login {
     }
 
     public boolean check(){
-        if (this.passwort.equals(getPasswort())){
-            return true;
-        } else {
-            return false;
-        }
+        return this.passwort.equals(getPasswort());
     }
 }

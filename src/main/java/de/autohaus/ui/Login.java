@@ -40,14 +40,16 @@ public class Login {
 
                     getLogin().setVisible(false);
 
-                    new InsertLogs(textField1.getText(), "Login");
+                    new InsertLogs(textField1.getText(),"login", "erfolgreich", false);
 
                     ui.setBenutzerID(textField1.getText());
                 } else {
+                    new InsertLogs(textField1.getText(),"login", "fehlgeschlagen", true);
                     LIerror.setVisible(true);
                 }
             }
         });
+
         abbrechenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

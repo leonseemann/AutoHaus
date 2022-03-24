@@ -332,6 +332,7 @@
                     </constraints>
                     <properties>
                       <editable value="false"/>
+                      <text value=""/>
                     </properties>
                   </component>
                   <component id="d00c6" class="javax.swing.JTextField" binding="textFieldPreis">
@@ -758,7 +759,9 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <text value="0,0"/>
+                    </properties>
                   </component>
                   <component id="6c570" class="javax.swing.JLabel">
                     <constraints>

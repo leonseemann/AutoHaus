@@ -156,10 +156,10 @@ public class GUI {
                     reloadTables();
                     setAutoZero();
                 } catch (SQLException ex) {
-                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", true);
+                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", true, "SQL");
                     ex.printStackTrace();
                 } catch (FileNotFoundException ex) {
-                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", true);
+                    new InsertLogs(getBenutzerID(), "erstellt", "Auto", true, "SQL");
                     ex.printStackTrace();
                 }
             }
@@ -216,14 +216,14 @@ public class GUI {
                         ATbrowseLink.setText(null);
                         reloadTables();
                     } catch (SQLException ex) {
-                        new InsertLogs(getBenutzerID(), "editiert", "Auto", getID(pstm), true);
+                        new InsertLogs(getBenutzerID(), "editiert", "Auto", getID(pstm), true, "SQL");
                         ex.printStackTrace();
                     } catch (FileNotFoundException ex) {
-                        new InsertLogs(getBenutzerID(), "editiert", "Auto", getID(pstm), true);
+                        new InsertLogs(getBenutzerID(), "editiert", "Auto", getID(pstm), true, "SQL");
                         ex.printStackTrace();
                     }
                 } else {
-                    new InsertLogs(getBenutzerID(), "editiert", "Auto", true);
+                    new InsertLogs(getBenutzerID(), "editiert", "Auto", true, "Zero");
                 }
             }
         });
@@ -285,7 +285,7 @@ public class GUI {
                     reloadTables();
                     setAusstattungZero();
                 } catch (SQLException ex) {
-                    new InsertLogs(getBenutzerID(), "erstellt", "Ausstattung", true);
+                    new InsertLogs(getBenutzerID(), "erstellt", "Ausstattung", true, "SQL");
                     ex.printStackTrace();
                 }
             }
@@ -316,11 +316,11 @@ public class GUI {
 
                         reloadTables();
                     } catch (SQLException ex) {
-                        new InsertLogs(getBenutzerID(), "editiert", "Ausstattung", getID(pstm), true);
+                        new InsertLogs(getBenutzerID(), "editiert", "Ausstattung", getID(pstm), true, "SQL");
                         ex.printStackTrace();
                     }
                 } else {
-                    new InsertLogs(getBenutzerID(), "editiert", "Ausstattung", true);
+                    new InsertLogs(getBenutzerID(), "editiert", "Ausstattung", true, "Zero");
                 }
             }
         });
@@ -381,11 +381,11 @@ public class GUI {
 
                         reloadTables();
                     } catch (SQLException ex) {
-                        new InsertLogs(getBenutzerID(), "erstellt", "Motor", getID(pstm), true);
+                        new InsertLogs(getBenutzerID(), "erstellt", "Motor", getID(pstm), true, "SQL");
                         ex.printStackTrace();
                     }
                 } else {
-                    new InsertLogs(getBenutzerID(), "erstellt", "Motor", true);
+                    new InsertLogs(getBenutzerID(), "erstellt", "Motor", true, "Zero");
                 }
             }
         });
@@ -411,11 +411,11 @@ public class GUI {
 
                         reloadTables();
                     } catch (SQLException ex) {
-                        new InsertLogs(getBenutzerID(), "editiert", "Motor", getID(pstm), true);
+                        new InsertLogs(getBenutzerID(), "editiert", "Motor", getID(pstm), true, "SQL");
                         ex.printStackTrace();
                     }
                 } else {
-                    new InsertLogs(getBenutzerID(), "editiert", "Motor", true);
+                    new InsertLogs(getBenutzerID(), "editiert", "Motor", true, "Zero");
                 }
             }
         });
@@ -448,6 +448,8 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 reloadTables();
+
+                new InsertLogs(getBenutzerID(), "reload", "Main");
             }
         });
 

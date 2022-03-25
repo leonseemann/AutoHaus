@@ -17,11 +17,11 @@ public class DeleteAusstattung {
 
                 new InsertLogs(benutzerID, "geloescht", "Ausstattung", AStextFieldASID.getText());
             } catch (SQLException ex) {
-                new InsertLogs(benutzerID, "geloescht", "Ausstattung", AStextFieldASID.getText(), true);
+                new InsertLogs(benutzerID, "geloescht", "Ausstattung", AStextFieldASID.getText(), true, "SQL");
                 ex.printStackTrace();
             }
         } else {
-            new InsertLogs(benutzerID, "geloescht", "Ausstattung", true);
+            new InsertLogs(benutzerID, "geloescht", "Ausstattung", true, "Zero");
         }
     }
 }

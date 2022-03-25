@@ -16,7 +16,6 @@ public class Login {
     private JButton abbrechenButton;
     private JButton loginButton;
     private JLabel LIerror;
-    private boolean success;
 
     public JPanel getRootPanel() {
         return rootPanel;
@@ -40,11 +39,11 @@ public class Login {
 
                     getLogin().setVisible(false);
 
-                    new InsertLogs(textField1.getText(),"login", "erfolgreich", false);
+                    new InsertLogs(textField1.getText(),"login", "Login");
 
                     ui.setBenutzerID(textField1.getText());
                 } else {
-                    new InsertLogs(textField1.getText(),"login", "fehlgeschlagen", true);
+                    new InsertLogs(textField1.getText(),"login", "Login", true, null);
                     LIerror.setVisible(true);
                 }
             }
@@ -53,6 +52,7 @@ public class Login {
         abbrechenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                new InsertLogs("login", "abbruch");
                 System.exit(0);
             }
         });

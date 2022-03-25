@@ -7,24 +7,26 @@ import static de.autohaus.model.Connect.connect;
 
 public class InsertLogs {
 
-    public InsertLogs(String email, String aktivitaet, String art, String ID, String modell) {
+    public InsertLogs(String email, String aktivitaet, String wo, String ID, String modell) {
         try {
-            String sql = "INSERT INTO logs (email, aktivitaet, art, datumzeit, ID, modell, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO logs (email, aktivitaet, wo, art,datumzeit, ID, modell, error) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstm = connect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             pstm.setString(1, email);
             pstm.setString(2, aktivitaet);
 
-            pstm.setString(3, art);
+            pstm.setString(3, wo);
 
-            pstm.setTimestamp(4, new Timestamp(new Date().getTime()));
+            pstm.setString(4, "erfolgreich");
 
-            pstm.setString(5, ID);
+            pstm.setTimestamp(5, new Timestamp(new Date().getTime()));
+
+            pstm.setString(6, ID);
 
 
-            pstm.setString(6, modell);
+            pstm.setString(7, modell);
 
-            pstm.setBoolean(7, false);
+            pstm.setBoolean(8, false);
 
             pstm.executeUpdate();
         } catch (SQLException ex){
@@ -32,23 +34,25 @@ public class InsertLogs {
         }
     }
 
-    public InsertLogs(String email, String aktivitaet, String art, String ID) {
+    public InsertLogs(String email, String aktivitaet, String wo, String ID) {
         try {
-            String sql = "INSERT INTO logs (email, aktivitaet, art, datumzeit, ID, modell, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO logs (email, aktivitaet, wo, art, datumzeit, ID, modell, error) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstm = connect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             pstm.setString(1, email);
             pstm.setString(2, aktivitaet);
 
-            pstm.setString(3, art);
+            pstm.setString(3, wo);
 
-            pstm.setTimestamp(4, new Timestamp(new Date().getTime()));
+            pstm.setString(4, "erfolgreich");
 
-            pstm.setString(5, ID);
+            pstm.setTimestamp(5, new Timestamp(new Date().getTime()));
 
-            pstm.setString(6, null);
+            pstm.setString(6, ID);
 
-            pstm.setBoolean(7, false);
+            pstm.setString(7, null);
+
+            pstm.setBoolean(8, false);
 
             pstm.executeUpdate();
         } catch (SQLException ex){
@@ -56,17 +60,19 @@ public class InsertLogs {
         }
     }
 
-    public InsertLogs(String email, String aktivitaet, String art, String ID, Boolean error){
+    public InsertLogs(String email, String aktivitaet, String wo, String ID, Boolean error, String art_error){
         try {
-            String sql = "INSERT INTO logs (email, aktivitaet, art,datumzeit, ID, error) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO logs (email, aktivitaet, wo, art, datumzeit, ID, error, art_error) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstm = connect().prepareStatement(sql);
 
             pstm.setString(1, email);
             pstm.setString(2, aktivitaet);
-            pstm.setString(3, art);
-            pstm.setTimestamp(4, new Timestamp(new Date().getTime()));
-            pstm.setString(5, ID);
-            pstm.setBoolean(6, error);
+            pstm.setString(3, wo);
+            pstm.setString(4, "fehlgeschlagen");
+            pstm.setTimestamp(5, new Timestamp(new Date().getTime()));
+            pstm.setString(6, ID);
+            pstm.setBoolean(7, error);
+            pstm.setString(8, art_error);
 
             pstm.executeUpdate();
         } catch (SQLException e) {
@@ -74,49 +80,56 @@ public class InsertLogs {
         }
     }
 
-    public InsertLogs(String email, String aktivitaet) {
+    public InsertLogs(String email, String aktivitaet, String wo) {
         try {
-            String sql = "INSERT INTO logs (email, aktivitaet, datumzeit, error) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO logs (email, aktivitaet, wo, art,datumzeit, error) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstm = connect().prepareStatement(sql);
 
             pstm.setString(1, email);
             pstm.setString(2, aktivitaet);
+            pstm.setString(3, wo);
+            pstm.setString(4, "erfolgreich");
+            pstm.setTimestamp(5, new Timestamp(new Date().getTime()));
+            pstm.setBoolean(6, false);
+
+            pstm.executeUpdate();
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+
+    public InsertLogs(String email, String aktivitaet, String wo, Boolean error, String art_error) {
+        try {
+            String sql = "INSERT INTO logs (email, aktivitaet, wo, art,datumzeit, error, art_error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement pstm = connect().prepareStatement(sql);
+
+            pstm.setString(1, email);
+            pstm.setString(2, aktivitaet);
+            pstm.setString(3, wo);
+            pstm.setString(4, "fehlgeschlagen");
+            pstm.setTimestamp(5, new Timestamp(new Date().getTime()));
+            pstm.setBoolean(6, error);
+            pstm.setString(7, art_error);
+
+            pstm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public InsertLogs(String aktivitaet, String art) {
+        try {
+            String sql = "INSERT INTO logs (aktivitaet, art, datumzeit, error) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstm = connect().prepareStatement(sql);
+
+            pstm.setString(1, aktivitaet);
+            pstm.setString(2, art);
             pstm.setTimestamp(3, new Timestamp(new Date().getTime()));
             pstm.setBoolean(4, false);
 
             pstm.executeUpdate();
-        } catch (SQLException ex){
-            ex.printStackTrace();
-        }
-    }
-
-    public InsertLogs(String email, String aktivitaet, String art, Boolean error) {
-        try {
-            String sql = "INSERT INTO logs (email, aktivitaet, art, datumzeit, error) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement pstm = connect().prepareStatement(sql);
-
-            pstm.setString(1, email);
-            pstm.setString(2, aktivitaet);
-            pstm.setString(3, art);
-            pstm.setTimestamp(4, new Timestamp(new Date().getTime()));
-            pstm.setBoolean(5, error);
-
-            pstm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private static String getID(PreparedStatement ps){
-        int id = 0;
-        try {
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                id = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Integer.toString(id);
     }
 }

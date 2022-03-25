@@ -21,11 +21,11 @@ public class DeleteAuto {
                 new InsertLogs(benutzerID, "geloescht", "Auto", ATtextFieldATID.getText());
 
             } catch (SQLException ex) {
-                new InsertLogs(benutzerID, "geloescht", "Auto", ATtextFieldATID.getText(), true);
+                new InsertLogs(benutzerID, "geloescht", "Auto", ATtextFieldATID.getText(), true, "SQL");
                 ex.printStackTrace();
             }
         } else {
-            new InsertLogs(benutzerID, "geloescht", "Auto", true);
+            new InsertLogs(benutzerID, "geloescht", "Auto", true, "Zero");
         }
     }
 

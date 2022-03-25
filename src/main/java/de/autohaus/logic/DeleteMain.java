@@ -20,11 +20,11 @@ public class DeleteMain {
 
                 new InsertLogs(benutzerID, "geloescht", "Main", MAINtextFieldATID.getText(), modellMain);
             } catch (SQLException ex) {
-                new InsertLogs(benutzerID, "geloescht", "Main", MAINtextFieldATID.getText(), true);
+                new InsertLogs(benutzerID, "geloescht", "Main", MAINtextFieldATID.getText(), true, "SQL");
                 ex.printStackTrace();
             }
         } else {
-            new InsertLogs(benutzerID, "geloescht", "Main", true);
+            new InsertLogs(benutzerID, "geloescht", "Main", true, "Zero");
         }
     }
 

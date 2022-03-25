@@ -18,11 +18,11 @@ public class DeleteMotor {
 
                 new InsertLogs(benutzerID, "geloescht", "Motor", MTtextFieldMTID.getText());
             } catch (SQLException ex) {
-                new InsertLogs(benutzerID, "geloescht", "Motor", MTtextFieldMTID.getText(), true);
+                new InsertLogs(benutzerID, "geloescht", "Motor", MTtextFieldMTID.getText(), true, "SQL");
                 ex.printStackTrace();
             }
         } else {
-            new InsertLogs(benutzerID, "geloescht", "Motor", true);
+            new InsertLogs(benutzerID, "geloescht", "Motor", true, "Zero");
         }
     }
 

@@ -16,7 +16,7 @@ import static de.autohaus.model.Connect.connect;
 
 public class GUI {
     private JPanel rootPanel;
-    private JTabbedPane tabbedPane1;
+    public JTabbedPane tabbedPane1;
     private JTable tableCars;
     private JTable tableAusstattung;
     private JTable tableMotor;
@@ -64,6 +64,14 @@ public class GUI {
     private JButton ATbrowse;
     private JTextField ATbrowseLink;
     private JTextField ATtextFieldModell;
+    private JTable tableBenutzer;
+    private JTextField BNemail;
+    private JPasswordField BNpassword;
+    private JTextField BNname;
+    private JTextField BNvorname;
+    private JCheckBox BNcheckBox;
+    private JButton einfügenButton;
+    private JSplitPane SplitBenutzer;
 
     private String BenutzerID;
 
@@ -93,6 +101,10 @@ public class GUI {
             tableMain.setModel(new DtmTableMain().getDtm());
     }
 
+    private void createTableBenutzer() {
+        tableBenutzer.setModel(new DtmTableBenutzer().getDtm());
+    }
+
     /* ----------------------------------- reloadTable --------------------------*/
 
     private void reloadTables() {
@@ -100,6 +112,7 @@ public class GUI {
         createTableCars();
         createTableAusstattung();
         createTableMain();
+        createTableBenutzer();
     }
 
     /* ----------------------------------- eventListener --------------------------*/
@@ -425,7 +438,6 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                     new DeleteMotor(MTtextFieldMTID, getBenutzerID(), MTtextFieldMTID);
 
-
                     setMotorZero();
                     reloadTables();
             }
@@ -458,9 +470,49 @@ public class GUI {
             public void actionPerformed(ActionEvent actionEvent) {
                     new DeleteMain(MAINtextFieldATID, getBenutzerID(), MAINtextFieldATID, modellMain);
 
-
                     reloadTables();
                     setAutoZero();
+            }
+        });
+    }
+
+    private void eventListenerBenutzer(){
+        tableBenutzer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                setBenutzer(tableBenutzer.getSelectedRow(), tableBenutzer.getModel());
+            }
+        });
+
+        tableBenutzer.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                setBenutzer(tableBenutzer.getSelectedRow(), tableBenutzer.getModel());
+            }
+        });
+
+        einfügenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PreparedStatement pstm = new InsertBenutzer().getPstm();
+                try {
+                    pstm.setString(1, BNemail.getText());
+                    pstm.setString(2, BNpassword.getText());
+                    pstm.setString(3, BNname.getText());
+                    pstm.setString(4, BNvorname.getText());
+                    pstm.setBoolean(5, BNcheckBox.isSelected());
+
+                    pstm.executeUpdate();
+
+                    new InsertLogs(getBenutzerID(), "erstellt", "Benutzer", BNemail.getText());
+
+                    reloadTables();
+                } catch (SQLException ex) {
+                    new InsertLogs(getBenutzerID(), "erstellt", "Motor", getID(pstm), true, "SQL");
+                    ex.printStackTrace();
+                }
             }
         });
     }
@@ -472,7 +524,7 @@ public class GUI {
         ATtextFieldATID.setText(tbm.getValueAt(i,0).toString());
 
         switch(tbm.getValueAt(i,1).toString()){
-            case "Combi":
+            case "Kombi":
                 comboBoxTyp.setSelectedIndex(1);
                 break;
             case "Coupe":
@@ -764,6 +816,18 @@ public class GUI {
         MAINtextFieldASID.setText(null);
         MAINtextFieldMTID.setText(null);
     }
+
+    private void setBenutzer(int i, TableModel tbm) {
+        BNemail.setText(tbm.getValueAt(i, 0).toString());
+
+        BNpassword.setText(tbm.getValueAt(i, 1).toString());
+
+        BNname.setText(tbm.getValueAt(i, 2).toString());
+
+        BNvorname.setText(tbm.getValueAt(i, 3).toString());
+
+        BNcheckBox.setSelected(tbm.getValueAt(i, 4).toString().equals("1"));
+    }
     /* ----------------------------------- Sonstiges --------------------------*/
 
     private static String getID(PreparedStatement ps){
@@ -790,14 +854,18 @@ public class GUI {
 
         ASError.setVisible(false);
 
+
+
         createTableCars();
         createTableAusstattung();
         createTableMotor();
         createTableMain();
+        createTableBenutzer();
         eventListenerAuto();
         eventListenerAusstattung();
         eventListenerMotor();
         eventListenerMain();
+        eventListenerBenutzer();
     }
 }
 

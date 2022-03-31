@@ -1,6 +1,7 @@
 package de.autohaus.ui;
 
 import de.autohaus.logic.CheckLogin;
+import de.autohaus.logic.GetBenutzerAdmin;
 import de.autohaus.logic.InsertLogs;
 
 import javax.swing.*;
@@ -42,6 +43,11 @@ public class Login {
                     new InsertLogs(textField1.getText(),"login", "Login");
 
                     ui.setBenutzerID(textField1.getText());
+
+                    if (new GetBenutzerAdmin(textField1.getText()).getAdmin()) {
+                        ui.tabbedPane1.setEnabledAt(4, true);
+                    }
+
                 } else {
                     new InsertLogs(textField1.getText(),"login", "Login", true, null);
                     LIerror.setVisible(true);

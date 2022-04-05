@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 import static de.autohaus.ui.MainGUI.getLogin;
 
@@ -29,7 +30,7 @@ public class Login {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (new CheckLogin(textField1.getText(), new BigInteger(passwordField1.getText())).check()) {
+                if (new CheckLogin(textField1.getText(), new BigInteger(passwordField1.getText().getBytes(StandardCharsets.UTF_8))).check()) {
                     GUI ui = new GUI();
                     JPanel root = ui.getRootPanel();
                     JFrame frame = new JFrame();

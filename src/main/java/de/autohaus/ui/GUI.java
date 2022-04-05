@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,6 +75,7 @@ public class GUI {
     private JCheckBox BNcheckBox;
     private JButton einfügenButton;
     private JSplitPane SplitBenutzer;
+    private JButton BNaktualisierenButton;
 
     private String BenutzerID;
 
@@ -499,21 +501,66 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PreparedStatement pstm = new InsertBenutzer().getPstm();
-                try {
-                    pstm.setString(1, BNemail.getText());
-                    pstm.setString(2, new RSA().encrypt(new BigInteger(BNpassword.getText())).toString());
-                    pstm.setString(3, BNname.getText());
-                    pstm.setString(4, BNvorname.getText());
-                    pstm.setBoolean(5, BNcheckBox.isSelected());
+                if (!BNemail.getText().isEmpty() && !BNemail.getText().isBlank()) {
+                    try {
+                        pstm.setString(1, BNemail.getText());
+                        pstm.setString(2, new RSA().encrypt(new BigInteger(BNpassword.getText().getBytes(StandardCharsets.UTF_8))).toString());
+                        pstm.setString(3, BNname.getText());
+                        pstm.setString(4, BNvorname.getText());
+                        pstm.setBoolean(5, BNcheckBox.isSelected());
 
-                    pstm.executeUpdate();
+                        pstm.executeUpdate();
 
-                    new InsertLogs(getBenutzerID(), "erstellt", "Benutzer", BNemail.getText());
+                        new InsertLogs(getBenutzerID(), "erstellt", "Benutzer", BNemail.getText());
 
-                    reloadTables();
-                } catch (SQLException ex) {
-                    new InsertLogs(getBenutzerID(), "erstellt", "Motor", getID(pstm), true, "SQL");
-                    ex.printStackTrace();
+                        reloadTables();
+                    } catch (SQLException ex) {
+                        new InsertLogs(getBenutzerID(), "erstellt", "Benutzer", true, "SQL");
+                        ex.printStackTrace();
+                    }
+                }  else {
+                    new InsertLogs(getBenutzerID(), "erstellt", "Benutzer", true, "Zero");
+                }
+            }
+        });
+
+        BNaktualisierenButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!BNemail.getText().isBlank() && !BNemail.getText().isEmpty()) {
+                    PreparedStatement pstm = new UpdateBenutzer().getPstm();
+
+                    try {
+
+                        if (BNpassword.getText().isBlank() && BNpassword.getText().isEmpty()) {
+                            String sql = "SELECT passwort FROM benutzer WHERE email = ?";
+                            PreparedStatement pstmB = connect().prepareStatement(sql);
+                            pstmB.setString(1, BNemail.getText());
+                            ResultSet rs = pstmB.executeQuery();
+                            rs.next();
+                            pstm.setString(1, rs.getString(1));
+                            rs.close();
+                            pstmB.close();
+                        } else {
+                            pstm.setString(1, new RSA().encrypt(new BigInteger(BNpassword.getText().getBytes(StandardCharsets.UTF_8))).toString());
+                        }
+
+                        pstm.setString(2, BNname.getText());
+                        pstm.setString(3, BNvorname.getText());
+                        pstm.setBoolean(4, BNcheckBox.isSelected());
+                        pstm.setString(5, BNname.getText());
+
+                        pstm.executeUpdate();
+
+                        new InsertLogs(getBenutzerID(), "editiert", "Benutzer", BNemail.getText());
+
+                        reloadTables();
+                    } catch (SQLException ex) {
+                        new InsertLogs(getBenutzerID(), "editiert", "Benutzer", getID(pstm), true, "SQL");
+                        ex.printStackTrace();
+                    }
+                } else {
+                    new InsertLogs(getBenutzerID(), "editiert", "Benutzer", true, "Zero");
                 }
             }
         });
@@ -821,8 +868,6 @@ public class GUI {
 
     private void setBenutzer(int i, TableModel tbm) {
         BNemail.setText(tbm.getValueAt(i, 0).toString());
-
-        BNpassword.setText(tbm.getValueAt(i, 1).toString());
 
         BNname.setText(tbm.getValueAt(i, 2).toString());
 

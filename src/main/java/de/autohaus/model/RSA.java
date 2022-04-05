@@ -25,6 +25,8 @@
  *
  ******************************************************************************/
 
+package de.autohaus.model;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
     
@@ -52,7 +54,7 @@ public class RSA {
       return message.modPow(publicKey, modulus);
    }
 
-   BigInteger decrypt(BigInteger encrypted) {
+   public BigInteger decrypt(BigInteger encrypted) {
       return encrypted.modPow(privateKey, modulus);
    }
 
@@ -73,7 +75,7 @@ public class RSA {
       // BigInteger message = new BigInteger(M-1, random);
 
       //// create message by converting string to integer
-      String s = "test";
+      String s = "SeemannJV2911#";
       byte[] bytes = s.getBytes();
       BigInteger message = new BigInteger(bytes);
 

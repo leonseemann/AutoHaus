@@ -1,15 +1,18 @@
 package de.autohaus.logic;
 
+import java.math.BigInteger;
+
 import de.autohaus.data.Login;
+import de.autohaus.model.RSA;
 
 
 public class CheckLogin extends Login {
-    private final String passwort;
+    private final BigInteger passwort;
 
-    public CheckLogin(String user, String passwort){
+    public CheckLogin(String user, BigInteger passwort){
         super(user);
 
-        this.passwort = passwort;
+        this.passwort = new RSA().encrypt(passwort);
     }
 
     public boolean check(){

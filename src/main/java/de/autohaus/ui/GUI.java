@@ -1,6 +1,7 @@
 package de.autohaus.ui;
 
 import de.autohaus.logic.*;
+import de.autohaus.model.RSA;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -8,6 +9,7 @@ import java.awt.event.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -499,7 +501,7 @@ public class GUI {
                 PreparedStatement pstm = new InsertBenutzer().getPstm();
                 try {
                     pstm.setString(1, BNemail.getText());
-                    pstm.setString(2, BNpassword.getText());
+                    pstm.setString(2, new RSA().encrypt(new BigInteger(BNpassword.getText())).toString());
                     pstm.setString(3, BNname.getText());
                     pstm.setString(4, BNvorname.getText());
                     pstm.setBoolean(5, BNcheckBox.isSelected());

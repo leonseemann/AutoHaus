@@ -1,5 +1,6 @@
 package de.autohaus.data;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,7 +8,7 @@ import java.sql.SQLException;
 import static de.autohaus.model.Connect.connect;
 
 public class Login {
-    private String passwort;
+    private BigInteger passwort;
 
     public Login(String user){
         try {
@@ -17,13 +18,13 @@ public class Login {
             ResultSet rs = pstm.executeQuery();
             rs.next();
 
-            this.passwort = rs.getString(1);
+            this.passwort = new BigInteger(rs.getString(1));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public String getPasswort() {
+    public BigInteger getPasswort() {
         return passwort;
     }
 }

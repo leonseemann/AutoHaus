@@ -170,8 +170,6 @@ public class GUI {
 
                     pstm.setString(9, encodeFileToBase64Binary(ATbrowseLink.getText()));
 
-                    System.out.println(encodeFileToBase64Binary(ATbrowseLink.getText()));
-
                     ImageInputStream iis = ImageIO.createImageInputStream(inputStream);
 
                     Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);

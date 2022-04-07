@@ -16,8 +16,7 @@ public class CheckLogin extends Login {
     }
 
     public boolean check(){
-        System.out.println(getPasswort());
-        System.out.println(this.passwort);
+        System.out.println(this.passwort.equals(getPasswort()));
         return this.passwort.equals(getPasswort());
     }
 }

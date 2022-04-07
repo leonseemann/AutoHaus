@@ -10,7 +10,10 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.sql.*;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -165,7 +168,9 @@ public class GUI {
                 } else {
                     FileInputStream inputStream = new FileInputStream(ATbrowseLink.getText());
 
-                    pstm.setBlob(9, inputStream);
+                    pstm.setString(9, encodeFileToBase64Binary(ATbrowseLink.getText()));
+
+                    System.out.println(encodeFileToBase64Binary(ATbrowseLink.getText()));
 
                     ImageInputStream iis = ImageIO.createImageInputStream(inputStream);
 
@@ -758,6 +763,12 @@ public class GUI {
             e.printStackTrace();
         }
         return Integer.toString(id);
+    }
+
+    private static String encodeFileToBase64Binary(String fileName) throws IOException {
+        File file = new File(fileName);
+        byte[] encoded = Base64.getEncoder().encode(Files.readAllBytes(file.toPath()));
+        return new String(encoded, StandardCharsets.US_ASCII);
     }
 
     public JPanel getRootPanel() {

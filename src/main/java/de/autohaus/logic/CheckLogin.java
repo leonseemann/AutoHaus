@@ -9,7 +9,7 @@ import de.autohaus.model.RSA;
 public class CheckLogin extends Login {
     private final BigInteger passwort;
 
-    public CheckLogin(String user, BigInteger passwort){
+    public CheckLogin(String user, String passwort){
         super(user);
 
         this.passwort = new RSA().encrypt(passwort);

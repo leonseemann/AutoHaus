@@ -2,17 +2,23 @@ package de.autohaus.ui;
 
 import javax.swing.*;
 
+import static de.autohaus.model.Connect.tryConnect;
+
 public class MainGUI {
     private static JFrame frameLogin;
 
     public static void main(String[] args) {
         setLook();
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                createGUI();
-            }
-        });
+        if (tryConnect()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    createGUI();
+                }
+            });
+        } else {
+            System.err.println("No connection to Database!");
+        }
     }
 
     private static void createGUI(){

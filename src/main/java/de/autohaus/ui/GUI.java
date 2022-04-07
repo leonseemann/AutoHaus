@@ -78,6 +78,7 @@ public class GUI {
     private JButton BNaktualisierenButton;
 
     private String BenutzerID;
+    private String BNnameString;
 
     public void setBenutzerID(String benutzerID) {
         BenutzerID = benutzerID;
@@ -504,7 +505,7 @@ public class GUI {
                 if (!BNemail.getText().isEmpty() && !BNemail.getText().isBlank()) {
                     try {
                         pstm.setString(1, BNemail.getText());
-                        pstm.setString(2, new RSA().encrypt(new BigInteger(BNpassword.getText().getBytes(StandardCharsets.UTF_8))).toString());
+                        pstm.setString(2, new RSA().encrypt(BNpassword.getText()).toString());
                         pstm.setString(3, BNname.getText());
                         pstm.setString(4, BNvorname.getText());
                         pstm.setBoolean(5, BNcheckBox.isSelected());
@@ -527,7 +528,7 @@ public class GUI {
         BNaktualisierenButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!BNemail.getText().isBlank() && !BNemail.getText().isEmpty()) {
+                if (!BNnameString.isBlank() && !BNnameString.isEmpty()) {
                     PreparedStatement pstm = new UpdateBenutzer().getPstm();
 
                     try {
@@ -542,13 +543,13 @@ public class GUI {
                             rs.close();
                             pstmB.close();
                         } else {
-                            pstm.setString(1, new RSA().encrypt(new BigInteger(BNpassword.getText().getBytes(StandardCharsets.UTF_8))).toString());
+                            pstm.setString(1, new RSA().encrypt(BNpassword.getText()).toString());
                         }
 
                         pstm.setString(2, BNname.getText());
                         pstm.setString(3, BNvorname.getText());
                         pstm.setBoolean(4, BNcheckBox.isSelected());
-                        pstm.setString(5, BNname.getText());
+                        pstm.setString(5, BNnameString);
 
                         pstm.executeUpdate();
 
@@ -868,6 +869,8 @@ public class GUI {
 
     private void setBenutzer(int i, TableModel tbm) {
         BNemail.setText(tbm.getValueAt(i, 0).toString());
+
+        BNnameString = tbm.getValueAt(i, 0).toString();
 
         BNname.setText(tbm.getValueAt(i, 2).toString());
 

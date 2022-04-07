@@ -3,6 +3,7 @@ package de.autohaus.logic;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 
 import static de.autohaus.model.Connect.connect;
 
@@ -12,7 +13,7 @@ public class InsertMotor {
     public InsertMotor() {
         try {
             String sql = "INSERT INTO motor (Verbrauch, Getriebe, Kraftstoff, Hubraum, PS) VALUES (?, ?, ?, ?, ?);";
-            this.pstm = connect().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            this.pstm = Objects.requireNonNull(connect()).prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException e) {
             e.printStackTrace();
         }

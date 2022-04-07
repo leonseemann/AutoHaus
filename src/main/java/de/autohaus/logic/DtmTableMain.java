@@ -33,13 +33,10 @@ public class DtmTableMain {
     }
 
     private static String jaNeinBoolean(String x) {
-        switch (x) {
-            case "0":
-                return "Nein";
-            case "1":
-                return "Ja";
-            default:
-                return "Unbekannt";
-        }
+        return switch (x) {
+            case "0" -> "Nein";
+            case "1" -> "Ja";
+            default -> "Unbekannt";
+        };
     }
 }

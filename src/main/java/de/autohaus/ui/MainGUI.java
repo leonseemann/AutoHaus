@@ -10,12 +10,7 @@ public class MainGUI {
     public static void main(String[] args) {
         setLook();
         if (tryConnect()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    createGUI();
-                }
-            });
+            SwingUtilities.invokeLater(MainGUI::createGUI);
         } else {
             System.err.println("No connection to Database!");
         }

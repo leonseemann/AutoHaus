@@ -2,6 +2,7 @@ package de.autohaus.logic;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import static de.autohaus.model.Connect.connect;
 
@@ -11,7 +12,7 @@ public class UpdateAuto {
     public UpdateAuto() {
         try {
             String pstm = "UPDATE auto SET Typ = ?, Modell = ?, Baujahr = ?, Hersteller = ?, Kommentar = ?, Preis = ?, bild = ? WHERE ATID = ?;";
-            this.pstm = connect().prepareStatement(pstm);
+            this.pstm = Objects.requireNonNull(connect()).prepareStatement(pstm);
         } catch (SQLException e) {
             e.printStackTrace();
         }

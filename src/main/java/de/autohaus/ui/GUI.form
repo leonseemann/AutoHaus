@@ -50,7 +50,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="606f6" class="javax.swing.JButton" binding="MAINlöschenButton2">
+                  <component id="606f6" class="javax.swing.JButton" binding="MAINloeschenButton2">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -218,7 +218,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="72121" class="javax.swing.JButton" binding="ATeinfügenButton">
+                      <component id="72121" class="javax.swing.JButton" binding="ATeinfuegenButton">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -234,7 +234,7 @@
                           <text value="Aktialisieren"/>
                         </properties>
                       </component>
-                      <component id="52308" class="javax.swing.JButton" binding="ATlöschenButton">
+                      <component id="52308" class="javax.swing.JButton" binding="ATloeschenButton">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -662,7 +662,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="b74d9" class="javax.swing.JButton" binding="ASeinfügenButton">
+                      <component id="b74d9" class="javax.swing.JButton" binding="ASeinfuegenButton">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -678,7 +678,7 @@
                           <text value="Aktualisieren"/>
                         </properties>
                       </component>
-                      <component id="66d06" class="javax.swing.JButton" binding="ASlöschenButton">
+                      <component id="66d06" class="javax.swing.JButton" binding="ASloeschenButton">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -862,7 +862,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="30982" class="javax.swing.JButton" binding="MTeinfügenButton">
+                      <component id="30982" class="javax.swing.JButton" binding="MTeinfuegenButton">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -878,7 +878,7 @@
                           <text value="Aktualisieren"/>
                         </properties>
                       </component>
-                      <component id="bfda7" class="javax.swing.JButton" binding="MTlöschenButton">
+                      <component id="bfda7" class="javax.swing.JButton" binding="MTloeschenButton">
                         <constraints>
                           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                         </constraints>
@@ -1011,7 +1011,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="d9fe8" class="javax.swing.JButton" binding="einfügenButton" default-binding="true">
+                      <component id="d9fe8" class="javax.swing.JButton" binding="einfuegenButton" default-binding="true">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
                         </constraints>

@@ -3,6 +3,7 @@ package de.autohaus.logic;
 import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import static de.autohaus.model.Connect.connect;
 
@@ -11,7 +12,7 @@ public class DeleteAusstattung {
         if (!id.getText().equals("0") && !id.getText().isBlank() && !id.getText().isEmpty()) {
             try {
                 String sql = "DELETE FROM ausstattung WHERE ASID = ?";
-                PreparedStatement pstm = connect().prepareStatement(sql);
+                PreparedStatement pstm = Objects.requireNonNull(connect()).prepareStatement(sql);
                 pstm.setString(1, id.getText());
                 pstm.executeUpdate();
 

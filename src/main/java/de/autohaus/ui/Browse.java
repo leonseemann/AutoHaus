@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 
+@SuppressWarnings("BoundFieldAssignment")
 public class Browse {
     private JPanel rootPanel;
     private JFileChooser fileChooser;

@@ -4,21 +4,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 import java.util.Scanner;
 
+@SuppressWarnings("EnhancedSwitchMigration")
 public class Main extends Connect {
     public static void main(String[] args){
         tryConnect();
-        switch (inputInt("Auswahl: ")){
-            case "0":
-                exportSQL();
-                break;
-            case "1":
-                inputSQL();
-                break;
-            default:
-                System.err.println("Falsche eingabe!");
-                break;
+        switch (inputInt("Auswahl: ")) {
+            case "0" -> exportSQL();
+            case "1" -> inputSQL();
+            default -> System.err.println("Falsche eingabe!");
         }
     }
 
@@ -28,9 +24,9 @@ public class Main extends Connect {
         String sqlAuto = "INSERT INTO `Auto` (`Typ`, `Baujahr`, `Hersteller`, `Kommentar`, `ASID`, `MTID`) VALUES (?, ?, ?, ?, ?, ?);";
 
         try {
-            PreparedStatement pstmAusstattung = connect().prepareStatement(sqlAusstattung, Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement pstmMotor = connect().prepareStatement(sqlMotor, Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement pstmAuto = connect().prepareStatement(sqlAuto);
+            PreparedStatement pstmAusstattung = Objects.requireNonNull(connect()).prepareStatement(sqlAusstattung, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pstmMotor = Objects.requireNonNull(connect()).prepareStatement(sqlMotor, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pstmAuto = Objects.requireNonNull(connect()).prepareStatement(sqlAuto);
 
             pstmAuto.setString(1, inputTyp());
             pstmAuto.setString(2, inputInt("Baujahr"));
@@ -39,7 +35,7 @@ public class Main extends Connect {
 
             clearConsole();
 
-            pstmMotor.setString(1, inputDouble("Verbrauch"));
+            pstmMotor.setString(1, inputDouble());
             pstmMotor.setString(2, inputGetriebe());
             pstmMotor.setString(3, inputKraftstoff());
             pstmMotor.setString(4, inputInt("Hubraum"));
@@ -77,7 +73,7 @@ public class Main extends Connect {
 
     private static void exportSQL(){
         try {
-            Statement stm = connect().createStatement();
+            Statement stm = Objects.requireNonNull(connect()).createStatement();
 
             String execute = "SELECT * FROM Ausstattung";
 
@@ -88,7 +84,7 @@ public class Main extends Connect {
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10));
             }
         } catch (SQLException e) {
-            e.getErrorCode();
+            e.printStackTrace();
         }
     }
 
@@ -105,6 +101,7 @@ public class Main extends Connect {
         return scan.next();
     }
 
+    @SuppressWarnings("EnhancedSwitchMigration")
     private static String inputBoolean(String name){
         Scanner scan = new Scanner(System.in);
         System.out.printf("%s [1] Ja - [0] Nein: ", name);
@@ -124,9 +121,9 @@ public class Main extends Connect {
         return Integer.toString(scan.nextInt());
     }
 
-    private static String inputDouble(String name){
+    private static String inputDouble(){
         Scanner scan = new Scanner(System.in);
-        System.out.printf("%s (Kommazahl): ", name);
+        System.out.printf("%s (Kommazahl): ", "Verbrauch");
         return Double.toString(scan.nextDouble());
     }
 

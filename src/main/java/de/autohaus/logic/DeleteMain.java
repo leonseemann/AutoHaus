@@ -3,6 +3,7 @@ package de.autohaus.logic;
 import javax.swing.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import static de.autohaus.model.Connect.connect;
 
@@ -14,7 +15,7 @@ public class DeleteMain {
         if (!id.getText().equals("0") && !id.getText().isBlank() && !id.getText().isEmpty()) {
             try {
                 String sql = "DELETE auto, motor, ausstattung FROM auto RIGHT JOIN motor ON auto.MTID = motor.MTID RIGHT JOIN ausstattung ON auto.ASID = ausstattung.ASID WHERE auto.ATID = ?";
-                this.pstm = connect().prepareStatement(sql);
+                this.pstm = Objects.requireNonNull(connect()).prepareStatement(sql);
                 this.pstm.setString(1, id.getText());
                 this.pstm.executeUpdate();
 

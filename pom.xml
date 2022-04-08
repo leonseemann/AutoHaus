@@ -70,7 +70,7 @@
     </dependencies>
 
     <build>
-        <finalName>AutoHaus</finalName>
+        <finalName>Autohaus</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>

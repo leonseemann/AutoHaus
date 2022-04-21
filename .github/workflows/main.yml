@@ -34,8 +34,6 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: compile
-        run: |
-          echo "cleaning up old compilation files, then compiling, testing and packaging, "  |
-          mvn clean install  
+        run: mvn clean install  
 
 

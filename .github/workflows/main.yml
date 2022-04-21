@@ -10,7 +10,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo "🐧 This job is now running on a ${{ runner.os }}"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}.""
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       
   setup:
     needs: [welcome]

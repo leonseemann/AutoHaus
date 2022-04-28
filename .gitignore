@@ -1,4 +1,4 @@
-/target
-/.idea
-
 /.idea/
+/out/
+/target/
+/src/main/resources/META-INF/

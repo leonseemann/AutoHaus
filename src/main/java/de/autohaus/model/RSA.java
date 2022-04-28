@@ -63,19 +63,4 @@ public class RSA {
       s += "modulus = " + modulus;
       return s;
    }
- 
-   public static void main(String[] args) {
-      RSA key = new RSA();
-      System.out.println(key);
- 
-      String message = "admin";
-      byte[] bytes = message.getBytes();
-      BigInteger messageBytes = new BigInteger(bytes);
-
-      BigInteger encrypt = key.encrypt(message);
-      BigInteger decrypt = key.decrypt(encrypt);
-      System.out.println("message   = " + messageBytes);
-      System.out.println("encrypted = " + encrypt);
-      System.out.println("decrypted = " + decrypt);
-   }
 }

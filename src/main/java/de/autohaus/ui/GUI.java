@@ -237,7 +237,7 @@ public class GUI {
                     }
 
                     pstm.setString(6, textFieldPreis.getText().replace(",", "."));
-                    pstm.setString(8, ATtextFieldATID.getText());
+                    pstm.setString(9, ATtextFieldATID.getText());
 
                     if (ATbrowseLink.getText().isBlank()) {
                         String sql = "SELECT bild FROM auto WHERE ATID = ?;";
@@ -248,8 +248,18 @@ public class GUI {
                         rsSelect.next();
                         pstm.setBlob(7, rsSelect.getBlob("bild"));
                     } else {
-                        InputStream in = new FileInputStream(ATbrowseLink.getText());
-                        pstm.setBlob(7, in);
+                        FileInputStream inputStream = new FileInputStream(ATbrowseLink.getText());
+
+                        pstm.setString(7, encodeFileToBase64Binary(ATbrowseLink.getText()));
+
+                        ImageInputStream iis = ImageIO.createImageInputStream(inputStream);
+
+                        Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
+
+                        while (imageReaders.hasNext()) {
+                            ImageReader reader = imageReaders.next();
+                            pstm.setString(8, reader.getFormatName());
+                        }
                     }
 
                     pstm.executeUpdate();
@@ -260,6 +270,8 @@ public class GUI {
                 } catch (SQLException | FileNotFoundException ex) {
                     new InsertLogs(getBenutzerID(), "editiert", "Auto", getID(pstm), true, "SQL");
                     ex.printStackTrace();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             } else {
                 new InsertLogs(getBenutzerID(), "editiert", "Auto", true, "Zero");

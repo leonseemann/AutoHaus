@@ -11,8 +11,6 @@ public class MainGUI {
         setLook();
         if (tryConnect()) {
             SwingUtilities.invokeLater(MainGUI::createGUI);
-        } else {
-            System.err.println("No connection to Database!");
         }
     }
 

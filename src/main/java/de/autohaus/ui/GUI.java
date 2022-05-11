@@ -240,13 +240,14 @@ public class GUI {
                     pstm.setString(9, ATtextFieldATID.getText());
 
                     if (ATbrowseLink.getText().isBlank()) {
-                        String sql = "SELECT bild FROM auto WHERE ATID = ?;";
+                        String sql = "SELECT bild, bildendung FROM auto WHERE ATID = ?;";
                         PreparedStatement pstmSelect = Objects.requireNonNull(connect()).prepareStatement(sql);
                         pstmSelect.setString(1, ATtextFieldATID.getText());
                         ResultSet rsSelect = pstmSelect.executeQuery();
 
                         rsSelect.next();
                         pstm.setBlob(7, rsSelect.getBlob("bild"));
+                        pstm.setString(8, rsSelect.getString("bildendung"));
                     } else {
                         FileInputStream inputStream = new FileInputStream(ATbrowseLink.getText());
 
